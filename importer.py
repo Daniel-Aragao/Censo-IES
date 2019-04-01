@@ -1,8 +1,9 @@
 import csv
 import pandas
-
+from config import Config
 
 class Importer:
+    config: Config = None
 
     @staticmethod
     def import_csv(path: str, delimiter: str ="|", encoding: str ='iso-8859-14', lines_limit: int = 0):
@@ -18,7 +19,6 @@ class Importer:
                 count += 1 
                 if lines_limit and count >= lines_limit:
                     break
-
         
         return lines
 
@@ -43,13 +43,28 @@ class Importer:
 
     @staticmethod
     def import_data_dictionary(path, header=1):
+        dict_config = Importer.config.parse()['dictionary']
+
         excel = Importer.import_workbook(path)
         sheet_names = Importer.get_sheet_names_from_workbook(excel)
 
-        for sheet_name in sheet_names:
-            sheet = Importer.import_sheet_from_workbook(excel, sheet_name, header=1)
+        sheets = {}
 
-            sheet.columns
+        for sheet_name in sheet_names:
+            sheet_parsed = Importer.import_sheet_from_workbook(excel, sheet_name, header=1)
+
+            sheet = {
+                "name": sheet_name,
+                "pandas_obj": sheet_parsed,
+                "columns": list(sheet.columns),
+                "data": []
+            }
+
+            # for column in sheet.columns:
+            
+            
+            sheets.append(sheet)
+
 
 
 

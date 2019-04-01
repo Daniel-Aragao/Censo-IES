@@ -1,0 +1,11 @@
+{
+    "dictionary": {
+        "ord": "ORD",
+        "name": "NOME DA VARIÁVEL",
+        "description": "DESCRIÇÃO DA VARIÁVEL",
+        "type": "TIPO",
+        "size": "TAM",
+        "category": "DESCRIÇÃO DAS CATEGORIAS",
+        "obs": "OBSERVAÇÃO"
+    }
+}
