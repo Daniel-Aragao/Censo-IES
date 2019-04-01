@@ -24,11 +24,18 @@ class Importer:
 
     @staticmethod
     def import_workbook(path):
-        return pandas.Excelfile(path)
+        return pandas.ExcelFile(path)
 
     @staticmethod
     def import_sheet_from_workbook(workbook: pandas.io.excel.Excelfile, sheet_name, header=1):
         return workbook.parse(sheet_name, header=header)
+    
+    @staticmethod
+    def import_sheet_columns(sheet: pandas.core.frame.DataFrame=None, path: str=None, sheet_name: str = None, header=1):
+        if sheet:
+            return sheet.columns
+        else:
+            return Importer.import_workbook(path).parse(sheet_name, header=header).columns
     
     @staticmethod
     def get_sheet_names_from_workbook(workbook: pandas.io.excel.Excelfile):
