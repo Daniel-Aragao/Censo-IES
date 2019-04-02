@@ -1,11 +1,24 @@
 {
+    "data_bases": {
+        "student": "db_ALUNO",
+        "course": "db_CURSO",
+        "IES": "db_IES"
+    },
     "dictionary": {
-        "ord": "ORD",
-        "name": "NOME DA VARIÁVEL",
-        "description": "DESCRIÇÃO DA VARIÁVEL",
-        "type": "TIPO",
-        "size": "TAM",
-        "category": "DESCRIÇÃO DAS CATEGORIAS",
-        "obs": "OBSERVAÇÃO"
+        "sheets": {
+            "student": "DM_ALUNO",
+            "course": "DM_CURSO",
+            "IES": "DM_IES"
+        },
+        "columns": {
+            "ord": "ORD",
+            "name": "NOME DA VARIÁVEL",
+            "description": "DESCRIÇÃO DA VARIÁVEL",
+            "type": "TIPO",
+            "size": "TAM",
+            "category": "DESCRIÇÃO DAS CATEGORIAS",
+            "obs": "OBSERVAÇÃO"
+        },
+        "header_line": 1
     }
 }

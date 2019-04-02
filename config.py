@@ -4,7 +4,7 @@ from os import path as PATH
 
 class Config:
     def __init__(self, path):
-        self.reload(path)
+        self.reload_path(path)
     
     def get_path(self):
         return self.__path
