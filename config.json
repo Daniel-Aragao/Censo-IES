@@ -11,13 +11,13 @@
             "IES": "DM_IES"
         },
         "columns": {
-            "ord": "ORD",
-            "name": "NOME DA VARIÁVEL",
-            "description": "DESCRIÇÃO DA VARIÁVEL",
-            "type": "TIPO",
-            "size": "TAM",
-            "category": "DESCRIÇÃO DAS CATEGORIAS",
-            "obs": "OBSERVAÇÃO"
+            "ord": {"name": "ORD", "mandatory": true},
+            "name": {"name": "NOME DA VARIÁVEL", "mandatory": true},
+            "description": {"name": "DESCRIÇÃO DA VARIÁVEL", "mandatory": true},
+            "type": {"name": "TIPO", "mandatory": true},
+            "size": {"name": "TAM", "mandatory": false},
+            "category": {"name":"DESCRIÇÃO DAS CATEGORIAS", "mandatory": false},
+            "obs": {"name": "OBSERVAÇÃO", "mandatory": false}
         },
         "header_line": 1
     }

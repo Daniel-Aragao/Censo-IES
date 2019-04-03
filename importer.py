@@ -1,6 +1,7 @@
 import csv
 import pandas
 from config import Config
+import math
 
 class Importer:
     config: Config = None
@@ -46,7 +47,19 @@ class Importer:
         clean_columns = list(filter(lambda x: str(x).lower().find("unnamed") < 0, list(columns)))
         clean_columns = list(map(lambda x: str(x).replace("\n",'').upper(), clean_columns))
 
+        columns_to_read = [i["name"] for i in columns_to_read]
+
         return list(filter(lambda x: x in columns_to_read, clean_columns))
+
+    @staticmethod   
+    def __is_mandatory(column, columns_to_read):
+        for column_to_read in columns_to_read:
+            
+            name = column_to_read["name"].upper()
+            column_upper = column.upper()
+
+            if column_upper.find(name) >= 0 or name.find(column_upper) >= 0:
+                return column_to_read["mandatory"]
 
     @staticmethod
     def import_data_dictionary(path, header=1):
@@ -73,25 +86,25 @@ class Importer:
                 "columns": clean_columns,
                 "data": []
             }
-
-            for i in sheet_parsed[sheet['columns']]:
-                print(i)
             
-            # print(sheet['columns'])
+            rows = sheet_parsed.get(clean_columns)
 
-            # for column in sheet['columns']:
-            #     print(column)
+            for columns in rows.values:
+                row = list(columns)
 
-            # for column in sheet.columns:
-            
+                row_dict = {}
+                include_row = True
+
+                for i, column in enumerate(row):
+                    row_dict[clean_columns[i]] = column
+
+                    if type(column) == float and math.isnan(column) :
+                        if Importer.__is_mandatory(clean_columns[i], columns_to_read):
+                            include_row = False
+                            break
+                
+                
+                if include_row:
+                    sheet['data'].append(row_dict)            
             
             sheets[sheet_name] = sheet
-
-
-
-
-
-
-
-
-
