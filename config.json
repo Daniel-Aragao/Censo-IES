@@ -1,8 +1,11 @@
 {
-    "data_bases": {
-        "student": "db_ALUNO",
-        "course": "db_CURSO",
-        "IES": "db_IES"
+    "censo_databases": {
+        "tables": {
+            "student": "db_ALUNO",
+            "course": "db_CURSO",
+            "IES": "db_IES"
+        },
+        "struct_table_name": "structure"
     },
     "dictionary": {
         "sheets": {
@@ -20,5 +23,11 @@
             "obs": {"name": "OBSERVAÇÃO", "mandatory": false}
         },
         "header_line": 1
+    },
+    "database_access": {
+        "name": "diplan_censo",
+        "user": "diplan",
+        "password": "diplan",
+        "host": "127.0.0.1"
     }
 }

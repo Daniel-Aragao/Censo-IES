@@ -1,7 +1,7 @@
 import csv
 import pandas
-from config import Config
 import math
+from config import Config
 
 class Importer:
     config: Config = None
@@ -62,7 +62,10 @@ class Importer:
                 return column_to_read["mandatory"]
 
     @staticmethod
-    def import_data_dictionary(path, header=1):
+    def import_data_dictionary(path, header=1, config=None):
+        if config:
+            self.config = config
+            
         dict_config = Importer.config.parse()['dictionary']
         label_number = dict_config["header_line"]
         columns_to_read = dict_config["columns"].values()
@@ -108,3 +111,6 @@ class Importer:
                     sheet['data'].append(row_dict)            
             
             sheets[sheet_name] = sheet
+        
+        return sheets
+
