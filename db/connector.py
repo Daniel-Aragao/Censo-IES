@@ -26,6 +26,7 @@ class Connector:
     
     def make_connection(self):        
         self.connection = self.__db_connector.cursor()
+        return self.connection
 
     def close_connection(self):
         self.connection.close()
@@ -43,13 +44,27 @@ class Connector:
 
         return False
     
-    def create_db(self):
-        exist = self.exist_db()
+    def create_db(self, check_if_exists=True):
+        if check_if_exists:
+            exist = self.exist_db()
 
-        if not exist:
+        if not check_if_exists or (check_if_exists and not exist):
             self.make_connection()
 
             self.execute("CREATE DATABASE " + self.name)
 
             self.close_connection()
+    
+    def exist_table(self, table_name):
+        self.make_connection()
+
+        self.connection.execute("SHOW TABLES")
+
+        for db in self.connection:
+            if db[0] == table_name:
+                return True
+        
+        self.close_connection()
+
+        return False
         
