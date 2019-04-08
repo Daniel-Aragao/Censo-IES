@@ -1,7 +1,9 @@
 import csv
 import pandas
 import math
+from sheet import Sheet
 from config import Config
+
 
 class Importer:
     config: Config = None
@@ -64,11 +66,13 @@ class Importer:
     @staticmethod
     def import_data_dictionary(path, header=1, config=None):
         if config:
-            self.config = config
+            Importer.config = config
             
-        dict_config = Importer.config.parse()['dictionary']
+        dict_config = Importer.config['dictionary']
         label_number = dict_config["header_line"]
         columns_to_read = dict_config["columns"].values()
+        columns_keys = list(dict_config["columns"].keys())
+
 
         excel = Importer.import_workbook(path)
         sheet_names = Importer.get_sheet_names_from_workbook(excel)
@@ -78,17 +82,18 @@ class Importer:
         for sheet_name in sheet_names:
             sheet_parsed = Importer.import_sheet_from_workbook(excel, sheet_name, header=label_number)
 
-            if not sheet_name in dict_config["sheets"].values():
+            if not sheet_name in dict_config["sheets"]:
                 continue
             
             clean_columns = Importer.clean_columns(sheet_parsed.columns, columns_to_read)
 
-            sheet = {
-                "name": sheet_name,
-                "pandas_obj": sheet_parsed,
-                "columns": clean_columns,
-                "data": []
-            }
+            sheet = Sheet(sheet_name, [])
+            # sheet = {
+            #     "name": sheet_name,
+            #     "pandas_obj": sheet_parsed,
+            #     "columns": clean_columns,
+            #     "data": []
+            # }
             
             rows = sheet_parsed.get(clean_columns)
 
@@ -99,6 +104,7 @@ class Importer:
                 include_row = True
 
                 for i, column in enumerate(row):
+                    clean_columns[i] era para ser na verdade as chaves do dicionario columns
                     row_dict[clean_columns[i]] = column
 
                     if type(column) == float and math.isnan(column) :
@@ -108,9 +114,9 @@ class Importer:
                 
                 
                 if include_row:
-                    sheet['data'].append(row_dict)            
+                    sheet.data.append(row_dict)            
             
-            sheets[sheet_name] = sheet
+            sheets[dict_config["sheets"][sheet_name]] = sheet
         
         return sheets
 

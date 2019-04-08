@@ -4,9 +4,9 @@
     },
     "dictionary": {
         "sheets": {
-            "student": "DM_ALUNO",
-            "course": "DM_CURSO",
-            "IES": "DM_IES"
+            "DM_ALUNO": "ALUNO",
+            "DM_CURSO": "CURSO",
+            "DM_IES": "IES"
         },
         "columns": {
             "ord": {"name": "ORD", "mandatory": true},

@@ -12,6 +12,7 @@ class Database:
         # self.__create_general_struct_table()
 
         self.__create_structs_tables()
+        pakss
 
     # def __create_general_struct_table(self):
     # (add this property in config.json in censo_databases) "struct_table_name": "structure"
