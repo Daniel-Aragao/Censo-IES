@@ -7,7 +7,7 @@ main_config = Config('config.json').parse()
 
 db = Database(main_config["database_access"], main_config["censo_databases"])
 
-updateController = UpdateStructController(db)
+updateController = UpdateStructController(db, config=main_config)
 
 
 ##### import dictionary
