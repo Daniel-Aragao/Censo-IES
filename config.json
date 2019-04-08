@@ -1,7 +1,6 @@
 {
     "censo_databases": {
-        "tables": ["ALUNO", "CURSO", "IES"],
-        "struct_table_name": "structure"
+        "tables": ["ALUNO", "CURSO", "IES"]
     },
     "dictionary": {
         "sheets": {
