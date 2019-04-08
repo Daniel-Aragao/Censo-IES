@@ -16,8 +16,8 @@ procedimento:
                     tipo do campo
                     data de inserção
                     flag para ignorar campo na importação de dados
-                    data da ultima atualização do campo
                     flag para ignorar criar campo como coluna na tabela de dados)            
+                    data da ultima atualização do campo
             1.1.5 adicionar tabelas de estrutura na tabela de estrutura geral                
             1.1.6 criar tabela de dados só com coluna id
         1.2 caso exista

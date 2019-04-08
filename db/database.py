@@ -29,8 +29,31 @@ class Database:
             self.connector.close_connection()
 
     def __create_structs_tables(self):
-        exists, tables_names = self.connector.exist_tables(self.database_config["tables"])
+        struct_tables = [table + "_struct" for table in self.database_config["tables"]]
+        data_tables = [table + "_data" for table in self.database_config["tables"]]
 
-        if not exists:
-            for table_name in tables_names:
+        struct_exists, struct_tables_names = self.connector.exist_tables(struct_tables)
+        data_exists, data_tables_names = self.connector.exist_tables(data_tables)
+
+        if not struct_exists:
+            connection = self.connector.make_connection()
+
+            for table_name in struct_tables_names:
+                connection.execute("CREATE TABLE " + table_name + "("
+                                    "id INT AUTO_INCREMENT PRIMARY KEY,"
+                                    "field_name VARCHAR(100) UNIQUE NOT NULL,"
+                                    "synonymous TEXT NOT NULL,"
+                                    "field_type VARCHAR(30),"
+                                    "insertion_date DATE NOT NULL,"
+                                    "ignore_field_import TINYINT(1) NOT NULL DEFAULT 0,"
+                                    "ignore_field_creation TINYINT(1) NOT NULL DEFAULT 0,"
+                                    "last_field_update DATE NOT NULL")
+
+            self.connector.close_connection()
+                
+        
+        if not data_exists:
+            for table_name in data_tables_names:
+                # connection = self.connector.make_connection()
+                # self.connector.close_connection()
                 pass
