@@ -4,6 +4,9 @@ from os import path as PATH
 
 class Config:
     def __init__(self, path):
+        self.__config_structure = None
+        self.__path = None
+
         self.reload_path(path)
     
     def get_path(self):

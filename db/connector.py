@@ -18,22 +18,27 @@ class Connector:
 
         self.__db_connector = mysql.connector.connect(
                 host=self.host,
-                user=self.name,
+                user=self.user,
                 passwd=config["password"]
             )
         
         self.connection = None
     
-    def make_connection(self):        
-        self.connection = self.__db_connector.cursor()
+    def make_connection(self, use_db=True):
+        # TODO: Observar implicações no parametro buffered=True abaixo:        
+        self.connection = self.__db_connector.cursor(buffered=True)
+
+        if use_db:
+            self.connection.execute("use " + self.name + ";")
+
         return self.connection
 
     def close_connection(self):
+        # self.connection.fetchall()
         self.connection.close()
         
     def exist_db(self):
-        self.make_connection()
-
+        self.make_connection(use_db=False)
         self.connection.execute("SHOW DATABASES")
 
         for db in self.connection:
@@ -49,22 +54,27 @@ class Connector:
             exist = self.exist_db()
 
         if not check_if_exists or (check_if_exists and not exist):
-            self.make_connection()
+            self.make_connection(use_db=False)
 
-            self.execute("CREATE DATABASE " + self.name)
+            self.connection.execute("CREATE DATABASE " + self.name)
 
             self.close_connection()
     
-    def exist_table(self, table_name):
+    def exist_tables(self, tables_names):
         self.make_connection()
 
+        self.connection.execute("use " + self.name + ";")
         self.connection.execute("SHOW TABLES")
 
-        for db in self.connection:
-            if db[0] == table_name:
-                return True
+        not_created = []
+        
+        db_tables = [db[0] for db in self.connection]
+
+        for table_name in tables_names:
+            if not (tables_names in db_tables):
+                not_created.append(table_name)
         
         self.close_connection()
 
-        return False
+        return (not bool(len(not_created))), not_created
         

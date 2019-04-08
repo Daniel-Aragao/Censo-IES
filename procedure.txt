@@ -5,10 +5,10 @@ procedimento:
 -   1. verificar se já existe a base em questão
         1.1 caso não exista faça
 -           1.1.1 criar banco
-            1.1.2 criar tabela de estrutura geral(
+-           1.1.2 criar tabela de estrutura geral(
                     nome das tabelas de estrutura 
                     nome das tabela de dados
-                    ultima data de atualização da estrutura)
+                    data de inserção da estrutura)
             1.1.3 verificar quais são as tabelas de estrutura
             1.1.4 criar tabelas de estrutura(
                     nome do campo
