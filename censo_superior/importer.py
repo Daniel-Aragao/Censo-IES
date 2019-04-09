@@ -45,23 +45,20 @@ class Importer:
         return workbook.sheet_names
     
     @staticmethod
-    def clean_columns(columns, columns_to_read):
-        clean_columns = list(filter(lambda x: str(x).lower().find("unnamed") < 0, list(columns)))
-        clean_columns = list(map(lambda x: str(x).replace("\n",'').upper(), clean_columns))
+    def clean_columns(columns, dict_config):
+        new_columns = list(filter(lambda x: str(x).lower().find("unnamed") < 0, list(columns)))
+        new_columns = list(map(lambda x: str(x).replace("\n",'').upper(), new_columns))
 
-        columns_to_read = [i["name"] for i in columns_to_read]
+        columns_to_return = []
 
-        return list(filter(lambda x: x in columns_to_read, clean_columns))
+        for new_column in new_columns:
+            for column_key in dict_config:
+                column_config = dict_config[column_key]
 
-    @staticmethod   
-    def __is_mandatory(column, columns_to_read):
-        for column_to_read in columns_to_read:
-            
-            name = column_to_read["name"].upper()
-            column_upper = column.upper()
+                if new_column.find(column_config["name"].upper()) >= 0:
+                    columns_to_return.append({"sheet_column": new_column, "column_key": column_key, "mandatory": column_config["mandatory"]})
 
-            if column_upper.find(name) >= 0 or name.find(column_upper) >= 0:
-                return column_to_read["mandatory"]
+        return columns_to_return
 
     @staticmethod
     def import_data_dictionary(path, header=1, config=None):
@@ -70,9 +67,6 @@ class Importer:
             
         dict_config = Importer.config['dictionary']
         label_number = dict_config["header_line"]
-        columns_to_read = dict_config["columns"].values()
-        columns_keys = list(dict_config["columns"].keys())
-
 
         excel = Importer.import_workbook(path)
         sheet_names = Importer.get_sheet_names_from_workbook(excel)
@@ -85,17 +79,11 @@ class Importer:
             if not sheet_name in dict_config["sheets"]:
                 continue
             
-            clean_columns = Importer.clean_columns(sheet_parsed.columns, columns_to_read)
+            clean_columns = Importer.clean_columns(sheet_parsed.columns, dict_config["columns"])
 
             sheet = Sheet(sheet_name, [])
-            # sheet = {
-            #     "name": sheet_name,
-            #     "pandas_obj": sheet_parsed,
-            #     "columns": clean_columns,
-            #     "data": []
-            # }
             
-            rows = sheet_parsed.get(clean_columns)
+            rows = sheet_parsed.get([i["sheet_column"] for i in clean_columns])
 
             for columns in rows.values:
                 row = list(columns)
@@ -104,11 +92,10 @@ class Importer:
                 include_row = True
 
                 for i, column in enumerate(row):
-                    clean_columns[i] era para ser na verdade as chaves do dicionario columns
-                    row_dict[clean_columns[i]] = column
+                    row_dict[clean_columns[i]["column_key"]] = column
 
                     if type(column) == float and math.isnan(column) :
-                        if Importer.__is_mandatory(clean_columns[i], columns_to_read):
+                        if clean_columns[i]["mandatory"]:
                             include_row = False
                             break
                 
