@@ -1,7 +1,11 @@
-from .connector import Connector
+from db.connector import Connector
+from db.structure_dao import StructureDAO
 
 
 class Database:
+    data_suffix = "_data"
+    struct_suffix = "_struct"
+
     def __init__(self, access_config, database_config):
         self.access_config = access_config
         self.database_config = database_config
@@ -12,7 +16,8 @@ class Database:
         # self.__create_general_struct_table()
 
         self.__create_structs_tables()
-        pakss
+
+        self.structure_dao = StructureDAO(self.connector, access_config, database_config)
 
     # def __create_general_struct_table(self):
     # (add this property in config.json in censo_databases) "struct_table_name": "structure"
@@ -32,11 +37,8 @@ class Database:
     #         self.connector.close_connection()
 
     def __create_structs_tables(self):
-        struct_suffix = "_struct"
-        data_suffix = "_data"
-
-        struct_tables = [table + struct_suffix for table in self.database_config["tables"]]
-        data_tables = [table + data_suffix for table in self.database_config["tables"]]
+        struct_tables = [table + Database.struct_suffix for table in self.database_config["tables"]]
+        data_tables = [table + Database.data_suffix for table in self.database_config["tables"]]
 
         struct_exists, struct_tables_names = self.connector.exist_tables(struct_tables)
         data_exists, data_tables_names = self.connector.exist_tables(data_tables)
@@ -45,15 +47,15 @@ class Database:
             connection = self.connector.make_connection()
 
             for table_name in struct_tables_names:
-                connection.execute("CREATE TABLE " + table_name + struct_suffix + " ("
-                                    "id INT AUTO_INCREMENT PRIMARY KEY,"
-                                    "field_name VARCHAR(100) UNIQUE NOT NULL,"
-                                    "synonymous TEXT NOT NULL,"
-                                    "field_type VARCHAR(30),"
-                                    "insertion_date DATE NOT NULL,"
-                                    "ignore_field_import TINYINT(1) NOT NULL DEFAULT 0,"
-                                    "ignore_field_creation TINYINT(1) NOT NULL DEFAULT 0,"
-                                    "last_field_update DATE NOT NULL")
+                connection.execute("CREATE TABLE " + table_name + " ("
+                    "id INT AUTO_INCREMENT PRIMARY KEY,"
+                    "field_name VARCHAR(100) UNIQUE NOT NULL,"
+                    "synonymous TEXT NOT NULL,"
+                    "field_type VARCHAR(30),"
+                    "insertion_date DATE NOT NULL,"
+                    "ignore_field_import TINYINT(1) NOT NULL DEFAULT 0,"
+                    "ignore_field_creation TINYINT(1) NOT NULL DEFAULT 0,"
+                    "last_field_update DATE NOT NULL)")
 
             self.connector.close_connection()
                 
@@ -62,7 +64,7 @@ class Database:
             connection = self.connector.make_connection()
 
             for table_name in data_tables_names:
-                connection.execute("CREATE TABLE " + table_name + data_suffix + " ("
+                connection.execute("CREATE TABLE " + table_name + " ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY"
                                     ")")
 

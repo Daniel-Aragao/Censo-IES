@@ -63,7 +63,7 @@ class Importer:
     @staticmethod
     def import_data_dictionary(path, header=1, config=None):
         if config:
-            Importer.config = config
+            Importer.config = config.parse()
             
         dict_config = Importer.config['dictionary']
         label_number = dict_config["header_line"]

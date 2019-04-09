@@ -71,7 +71,7 @@ class Connector:
         db_tables = [db[0] for db in self.connection]
 
         for table_name in tables_names:
-            if not (tables_names in db_tables):
+            if not (table_name in db_tables):
                 not_created.append(table_name)
         
         self.close_connection()
