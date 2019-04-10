@@ -12,7 +12,11 @@ updateController = UpdateStructController(db, config=main_config)
 
 tables = updateController.import_dict(path)
 table_curso = tables[1]
-print(updateController.parse(table_curso))
+diff_fields = updateController.parse(table_curso)
+
+field_dict = map(lambda x: {"name":x[0], "synonymous": "", "import": True, "type": x[2]},  diff_fields)
+
+updateController.save_table(table_curso, field_dict)
 
 ##### import dictionary
 # dict_sheets = Importer.import_data_dictionary(path, config=main_config)

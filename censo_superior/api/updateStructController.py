@@ -23,7 +23,7 @@ class UpdateStructController:
             # comparar campos e retornar as diferenças já eliminando os que possuem sinonimos
             pass
         else:
-            diff_fields = [(data["name"], data["description"]) for data in sheet.data]
+            diff_fields = [(data["name"], data["description"], data["type"]) for data in sheet.data]
         
         return diff_fields
             
@@ -31,4 +31,14 @@ class UpdateStructController:
     
     def save_table(self, table, field_dict):
         # return [campos novos] (somente os que deram erro)
-        pass
+        old_fields = self.db.structure_dao.get_fields(table + Database.struct_suffix)
+        errors = []
+        if old_fields and len(old_fields):
+            # verificar se algum sinonimo passado por parametro corresponde 
+            # ao nome de algum campo
+            pass
+        else:
+            self.db.structure_dao.add_fields(table + Database.struct_suffix, field_dict)
+
+        return errors
+            

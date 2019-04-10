@@ -36,6 +36,9 @@ class Connector:
     def close_connection(self):
         # self.connection.fetchall()
         self.connection.close()
+    
+    def commit(self):
+        self.__db_connector.commit()
         
     def exist_db(self):
         self.make_connection(use_db=False)
