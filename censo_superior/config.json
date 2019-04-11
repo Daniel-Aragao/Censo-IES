@@ -1,6 +1,10 @@
 {
     "censo_databases": {
-        "tables": ["ALUNO", "CURSO", "IES"]
+        "tables": ["ALUNO", "CURSO", "IES"],
+        "types":{
+            "char": "TEXT",
+            "num": "INT"
+        }
     },
     "dictionary": {
         "sheets": {

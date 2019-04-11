@@ -3,8 +3,7 @@ from db.structure_dao import StructureDAO
 
 
 class Database:
-    data_suffix = "_data"
-    struct_suffix = "_struct"
+    struct_suffix = StructureDAO.struct_suffix
 
     def __init__(self, access_config, database_config):
         self.access_config = access_config
@@ -37,8 +36,8 @@ class Database:
     #         self.connector.close_connection()
 
     def __create_structs_tables(self):
-        struct_tables = [table + Database.struct_suffix for table in self.database_config["tables"]]
-        data_tables = [table + Database.data_suffix for table in self.database_config["tables"]]
+        struct_tables = [table + StructureDAO.struct_suffix for table in self.database_config["tables"]]
+        data_tables = [table + StructureDAO.data_suffix for table in self.database_config["tables"]]
 
         struct_exists, struct_tables_names = self.connector.exist_tables(struct_tables)
         data_exists, data_tables_names = self.connector.exist_tables(data_tables)

@@ -4,6 +4,7 @@ from db.database import Database
 from api.updateStructController import UpdateStructController
 
 main_config = Config('config.json')
+
 path = r"misc/Dicionário_de_Dados.xlsx"
 
 db = Database(main_config.parse()["database_access"], main_config.parse()["censo_databases"])
@@ -14,7 +15,7 @@ tables = updateController.import_dict(path)
 table_curso = tables[1]
 diff_fields = updateController.parse(table_curso)
 
-field_dict = map(lambda x: {"name":x[0], "synonymous": "", "import": True, "type": x[2]},  diff_fields)
+field_dict = list(map(lambda x: {"name":x[0], "synonymous": "", "import": True, "type": x[2]},  diff_fields))
 
 updateController.save_table(table_curso, field_dict)
 

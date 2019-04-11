@@ -38,7 +38,7 @@ class UpdateStructController:
             # ao nome de algum campo
             pass
         else:
-            self.db.structure_dao.add_fields(table + Database.struct_suffix, field_dict)
+            self.db.structure_dao.add_fields(table, field_dict)
 
         return errors
             
