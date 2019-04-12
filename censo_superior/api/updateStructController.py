@@ -11,11 +11,25 @@ class UpdateStructController:
         self.__imported_dict = None
 
     def import_dict(self, path):
+        """
+        Receiving a path brings a dictionary sheet for memory to make any work
+        """
         self.__imported_dict = Importer.import_data_dictionary(
             path, config=self.main_config)
         return list(self.__imported_dict.keys())
 
     def parse(self, table):
+        """
+        After importing a dictionary from a sheet (function import_dict) do:
+
+        Receiving a table name it brings the actual diferrence betwen the given sheet
+        and the fields already saveded, returning a list of tuples of fields not
+        present in the synonymous column with the format ahead:
+
+        return [(name, description, type)]
+
+        obs.: The table name does not include suffixes _struct or _data
+        """
         sheet: Sheet = self.__imported_dict[table]
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
             table + Database.struct_suffix)
@@ -24,8 +38,6 @@ class UpdateStructController:
                       for data in sheet.data]
 
         if old_fields and len(old_fields):
-            # comparar campos e retornar as diferenças já eliminando os que possuem sinonimos
-
             for new_field in new_fields:
                 is_new = True
 
@@ -51,18 +63,44 @@ class UpdateStructController:
 
         return diff_fields
 
-        # return [campos novos]
+    def save_table(self, table, fields_dicts):
+        """
+        Gets the table name and the field fields_dicts, in the format bellow, and save in the database
+        the new fields in <table>_struct and update the columns in <table>_data, but only if all
+        the synonymous informed were encountered as a field name in <table>_struct.
 
-    def save_table(self, table, field_dict):
+        Obs.:
+            table name: The table name does not include suffixes _struct or _data
+            field_dict: [{"name":<str>, "description": <str>, "synonymous": <str>, "import": <boolean>, "type": <str>}]
+        """
         # return [campos novos] (somente os que deram erro)
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
             table + Database.struct_suffix)
+
         errors = []
-        if old_fields and len(old_fields):
-            # verificar se algum sinonimo passado por parametro corresponde ao nome
-            # de algum campo ao salvar, adicionar sinonimo na tabela struct
-            pass
+
+        new_fields = []
+        new_synonym = []
+
+        if old_fields and len(old_fields):            
+            for field_dict in fields_dicts:
+                synonym = field_dict["synonymous"]
+
+                if synonym:
+                    try:
+                        updated_id = next(old_field[old_fields_key["id"]] for old_field in old_fields if old_field[old_fields_key["field_name"]] == synonym)
+                        new_synonym.append((updated_id, synonym))
+                    except StopIteration as e:
+                        errors.append(field_dict)
+                
+                else:
+                    new_fields.append(field_dict)
+
         else:
-            self.db.structure_dao.add_fields(table, field_dict)
+            new_fields = fields_dicts
+        
+        if not len(errors):
+            self.db.structure_dao.add_fields(table, new_fields)
+            self.db.structure_dao.update_synonym(table, new_synonym)
 
         return errors

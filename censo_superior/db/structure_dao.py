@@ -24,7 +24,7 @@ class StructureDAO:
 
         self.connector.close_connection()
 
-        return fetched_data, {"field_name": 1, "synonymous": 2, "field_type": 3, "insertion_date": 4, "ignore_field_import": 5}
+        return fetched_data, {"id": 0, "field_name": 1, "synonymous": 2, "field_type": 3, "insertion_date": 4, "ignore_field_import": 5}
 
     def get_type(self, type_db):
         type_db = type_db.lower()
@@ -40,11 +40,11 @@ class StructureDAO:
     def add_fields(self, structure_name, field_dict):
         connection = self.connector.make_connection()
         sql_insert = "INSERT INTO " + structure_name + StructureDAO.struct_suffix + \
-            "(field_name, synonymous, field_type, insertion_date, ignore_field_import, last_field_update) VALUES (%s, %s, %s, %s, %s, %s)"
+            "(field_name, field_description, synonymous, field_type, insertion_date, ignore_field_import, last_field_update) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 
         time_now = time.strftime('%Y-%m-%d %H:%M:%S')
 
-        data_insert = map(lambda x: (x["name"], x["name"], x["type"],
+        data_insert = map(lambda x: (x["name"], x["description"], x["name"], x["type"],
                                      time_now, not x["import"], time_now), field_dict)
 
         connection.executemany(sql_insert, data_insert)
@@ -66,3 +66,6 @@ class StructureDAO:
         self.connector.commit()
 
         self.connector.close_connection()
+
+    def update_synonym(self, table, new_synonym):
+        raise Exception("TODO")
