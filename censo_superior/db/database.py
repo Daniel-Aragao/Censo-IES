@@ -49,6 +49,7 @@ class Database:
                 connection.execute("CREATE TABLE " + table_name + " ("
                     "id INT AUTO_INCREMENT PRIMARY KEY,"
                     "field_name VARCHAR(100) UNIQUE NOT NULL,"
+                    "field_description TEXT," 
                     "synonymous TEXT NOT NULL,"
                     "field_type VARCHAR(30),"
                     "insertion_date DATE NOT NULL,"

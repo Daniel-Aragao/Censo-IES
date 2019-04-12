@@ -18,23 +18,24 @@ class StructureDAO:
 
         connection = self.connector.make_connection()
 
-        connection.execute("SELECT * FROM " + structure_name)
+        connection.execute(
+            "SELECT  id, field_name, synonymous, field_type, insertion_date, ignore_field_import FROM " + structure_name)
         fetched_data = connection.fetchall()
 
         self.connector.close_connection()
 
-        return fetched_data
+        return fetched_data, {"field_name": 1, "synonymous": 2, "field_type": 3, "insertion_date": 4, "ignore_field_import": 5}
 
-    def __get_type(self, type_db):
+    def get_type(self, type_db):
         type_db = type_db.lower()
 
         types = self.database_config["types"]
 
         if not type_db in types:
-            raise Exception("Unsuported type, add a new type map in config.json: " + type_db)
+            raise Exception(
+                "Unsuported type, add a new type map in config.json: " + type_db)
 
         return types[type_db.lower()]
-
 
     def add_fields(self, structure_name, field_dict):
         connection = self.connector.make_connection()
@@ -44,20 +45,22 @@ class StructureDAO:
         time_now = time.strftime('%Y-%m-%d %H:%M:%S')
 
         data_insert = map(lambda x: (x["name"], x["name"], x["type"],
-                              time_now, not x["import"], time_now), field_dict)
+                                     time_now, not x["import"], time_now), field_dict)
 
         connection.executemany(sql_insert, data_insert)
 
-        sql_alter = "ALTER TABLE " + structure_name + StructureDAO.data_suffix # + "ADD COLUMN (%s %s)"
-        # data_alter = map(lambda x: (x["name"], self.__get_type(x["type"])), field_dict)
+        sql_alter = "ALTER TABLE " + structure_name + \
+            StructureDAO.data_suffix  # + "ADD COLUMN (%s %s)"
+        # data_alter = map(lambda x: (x["name"], self.get_type(x["type"])), field_dict)
 
         # connection.executemany(sql_insert, data_alter)
 
         for index, field in enumerate(field_dict):
-            sql_alter += " ADD COLUMN "+ field["name"] + " " + self.__get_type(field["type"])
+            sql_alter += " ADD COLUMN " + \
+                field["name"] + " " + self.get_type(field["type"])
 
             if index < len(field_dict) - 1:
-                 sql_alter += ","
+                sql_alter += ","
         connection.execute(sql_alter)
 
         self.connector.commit()
