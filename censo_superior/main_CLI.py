@@ -55,20 +55,20 @@ def importation_menu(table, updateController):
             print("Nome", "Tipo", "Sinonimos", "Importar", "Descrição\n")
 
             for index, field in enumerate(fields_diff_map):
-                print(str(index + 1) + ".", "\"" + field["name"] + "\"", "\"" + field["type"] + "\"", "\"" +
-                      field["synonymous"] + "\"", "\"" + str(field["import"]) + "\"", "\"" + field["description"] + "\"")
+                print("#" + str(index + 1) + ".", "\"" + field["name"] + "\"", "\"" + field["type"] + "\"", "\"" +
+                      field["synonymous"] + "\"", "\"" + str(field["import"]) + "\"", "\"" + field["description"].replace("\n", "\t") + "\"")
 
         elif selection == 4:
             field_index = -1
 
-            while field_index < 1 and field_index > len(fields_diff_map):
+            while field_index < 1 or field_index > len(fields_diff_map):
                 field_index = int(
-                    input("Digite o índice do campo que deseja configurar"))
+                    input("Digite o índice do campo que deseja configurar: "))
 
             field = fields_diff_map[field_index - 1]
 
             field_action = -1
-            print("Campo: " + str(field_index) + ". ")
+            print("\nCampo: #" + str(field_index) + ". ")
             print(field["name"], field["type"], field["synonymous"],
                   field["import"], field["description"] + "\n")
 

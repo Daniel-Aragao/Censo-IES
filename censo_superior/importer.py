@@ -58,6 +58,12 @@ class Importer:
                 if new_column.find(column_config["name"].upper()) >= 0:
                     columns_to_return.append({"sheet_column": new_column, "column_key": column_key, "mandatory": column_config["mandatory"]})
 
+        keys_finded = [i["column_key"] for i in columns_to_return]
+
+        for column_key in dict_config:
+            if not column_key in keys_finded:
+                raise Exception("The column corresponding to the key \"" + column_key + "\" in config.json was not found")
+
         return columns_to_return
 
     @staticmethod
