@@ -67,5 +67,14 @@ class StructureDAO:
 
         self.connector.close_connection()
 
-    def update_synonym(self, table, new_synonym):
-        raise Exception("TODO")
+    def update_synonym(self, table, new_synonyms):
+        connection = self.connector.make_connection()
+
+        sql_update = "UPDATE " + table + StructureDAO.struct_suffix + " SET synonymous = synonymous + %s WHERE id = %s"
+
+        for new_synonym in new_synonyms:
+            connection.execute(sql_update, new_synonym)
+
+        self.connector.commit()
+
+        self.connector.close_connection()

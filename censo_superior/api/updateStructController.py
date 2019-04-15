@@ -51,10 +51,10 @@ class UpdateStructController:
                         if new_field[2].lower() != field_type.lower():
                             raise Exception(
                                 "The field " + new_field[0] + "("+field_type+") already exists, but with a different type: " + new_field[2])
-                        
+
                         is_new = False
                         break
-                
+
                 if is_new:
                     diff_fields.append(new_field)
 
@@ -82,23 +82,27 @@ class UpdateStructController:
         new_fields = []
         new_synonym = []
 
-        if old_fields and len(old_fields):            
+        if old_fields and len(old_fields):
             for field_dict in fields_dicts:
                 synonym = field_dict["synonymous"]
 
                 if synonym:
                     try:
-                        updated_id = next(old_field[old_fields_key["id"]] for old_field in old_fields if old_field[old_fields_key["field_name"]] == synonym)
-                        new_synonym.append((updated_id, synonym))
+                        updated_id = next(
+                            old_field[old_fields_key["id"]] for old_field in old_fields if old_field[old_fields_key["field_name"]] == synonym)
+
+                        new_synonym.append((synonym, updated_id))
+
                     except StopIteration as e:
                         errors.append(field_dict)
-                
+
                 else:
-                    new_fields.append(field_dict)
+                    if field_dict["import"]:
+                        new_fields.append(field_dict)
 
         else:
             new_fields = fields_dicts
-        
+
         if not len(errors):
             self.db.structure_dao.add_fields(table, new_fields)
             self.db.structure_dao.update_synonym(table, new_synonym)
