@@ -4,7 +4,7 @@ from db.database import Database
 from api.updateStructController import UpdateStructController
 from os import path as os_path
 
-
+#/mnt/chromeos/removable/SD Card/Diplan/Dicionário_de_Dados 2017.xlsx
 def main_menu(controller):
     selection = -1
     print("========================= Menu Principal =========================\n")
@@ -14,7 +14,11 @@ def main_menu(controller):
         print("\t0. Sair do programa\n")
         print("\t1. Importar nova estrutura\n")
         print("\t2. Importar dados para estrutura já existente\n")
-        selection = int(input("Seleção (0,1,2): "))
+        
+        aux = input("Seleção (0,1,2): ")
+            
+        if aux:
+            selection = int(aux)
 
     return selection
 
@@ -35,7 +39,7 @@ def importation_menu(table, updateController):
     while(True):
         selection = -1
 
-        while selection < 0 or selection > 4:
+        while selection < 0 or selection > 5:
             print("Selecione uma ação para a importação da tabela "+table+":\n")
             print("\t0. Sair\n")
             print("\t1. Voltar\n")
@@ -43,7 +47,11 @@ def importation_menu(table, updateController):
             print("\t3. Exibir campos (importados sem sinonimo encontrado)\n")
             print("\t4. Configurar campo\n")
             print("\t5. Salvar novos campos\n")
-            selection = int(input("Seleção (0,1,2,3,4): "))
+            
+            aux = input("Seleção (0,1,2,3,4,5): ")
+            
+            if aux:
+                selection = int(aux)
 
         if not selection:
             return 0
@@ -62,8 +70,10 @@ def importation_menu(table, updateController):
             field_index = -1
 
             while field_index < 1 or field_index > len(fields_diff_map):
-                field_index = int(
-                    input("Digite o índice do campo que deseja configurar: "))
+                aux = input("Digite o índice do campo que deseja configurar: ")
+            
+                if aux:
+                    field_index = int(aux)
 
             field = fields_diff_map[field_index - 1]
 
@@ -78,7 +88,11 @@ def importation_menu(table, updateController):
                 print("\t2. Adicionar sinonimo\n")
                 print(
                     "\t3. " + ("Importar" if not field["import"] else "Não importar") + "\n")
-                field_action = int(input("Selecione (1,2,3):"))
+                
+                aux = input("Seleção (1,2,3): ")
+            
+                if aux:
+                    field_action = int(aux)
 
             if field_action == 2:
                 field["synonymous"] = input("Digite o sinonimo: ")
@@ -114,9 +128,11 @@ def import_structure(controller):
 
             for index, imported_table in enumerate(imported_tables):
                 print("\t" + str(index + 1) + ". " + imported_table + "\n")
-
-            choosen_table = int(
-                input("Selecione [0, " + str(len(imported_tables)) + "]: "))
+                
+            aux = input("Selecione [0, " + str(len(imported_tables)) + "]: ")
+            
+            if aux:
+                choosen_table = int(aux)
 
         return choosen_table
 
@@ -133,7 +149,11 @@ def import_structure(controller):
             print("\t1. Menu principal\n")
             print("\t2. Trocar tabela\n")
             print("\t3. Importar\n")
-            table_action = int(input("Selecione(0,1,2,3): "))
+            
+            aux = input("Seleção (0,1,2,3): ")
+            
+            if aux:
+                table_action = int(aux)
 
         if not table_action:
             return table_action

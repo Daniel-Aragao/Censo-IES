@@ -6,7 +6,7 @@ from config import Config
 
 
 class Importer:
-    config: Config = None
+    config = None
 
     @staticmethod
     def import_csv(path: str, delimiter: str ="|", encoding: str ='iso-8859-14', lines_limit: int = 0):
@@ -19,7 +19,7 @@ class Importer:
             for row in reader:
                 lines.append(row)
                 
-                count += 1 
+                count += 1
                 if lines_limit and count >= lines_limit:
                     break
         
@@ -107,7 +107,7 @@ class Importer:
                 
                 
                 if include_row:
-                    sheet.data.append(row_dict)            
+                    sheet.data.append(row_dict)
             
             sheets[dict_config["sheets"][sheet_name]] = sheet
         

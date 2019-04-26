@@ -5,7 +5,7 @@ from sheet import Sheet
 
 
 class UpdateStructController:
-    def __init__(self, db: Database, config: Config):
+    def __init__(self, db, config):
         self.db = db
         self.main_config = config
         self.__imported_dict = None
@@ -30,7 +30,7 @@ class UpdateStructController:
 
         obs.: The table name does not include suffixes _struct or _data
         """
-        sheet: Sheet = self.__imported_dict[table]
+        sheet = self.__imported_dict[table]
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
             table + Database.struct_suffix)
         diff_fields = []
