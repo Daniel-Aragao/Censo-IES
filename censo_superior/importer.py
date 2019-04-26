@@ -9,12 +9,18 @@ class Importer:
     config = None
 
     @staticmethod
-    def import_csv(path: str, delimiter: str ="|", encoding: str ='iso-8859-14', lines_limit: int = 0):
+    def import_csv(path: str, config=None):
+        if config:
+            Importer.config = config.parse()
+        
+        data_file_config = Importer.config["data_csv_file"]
+        lines_limit = data_file_config["lines_limit"]
+        
         lines = []
         count = 0
 
-        with open(path, encoding='iso-8859-14') as file_obj_control:
-            reader = csv.DictReader(file_obj_control, delimiter=delimiter)
+        with open(path, encoding=data_file_config["encoding"]) as file_obj_control:
+            reader = csv.DictReader(file_obj_control, delimiter=data_file_config["delimiter"])
             
             for row in reader:
                 lines.append(row)

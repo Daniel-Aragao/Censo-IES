@@ -23,6 +23,11 @@
         },
         "header_line": 1
     },
+    "data_csv_file": {
+      "delimiter": "|",
+      "encoding": "iso-8859-14",
+      "lines_limit": 0
+    },
     "database_access": {
         "name": "diplan_censo",
         "user": "diplan",
