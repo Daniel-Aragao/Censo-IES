@@ -175,6 +175,17 @@ def import_structure(controller):
         return 0
 
     return -1
+    
+
+def import_data(controller):
+    print("========================= Importar novos dados =========================\n")
+
+    exists_path = False
+
+    while not exists_path:
+        print("Importe um conjunto de dados\n")
+        path = input("Caminho para o arquivo: ")
+        exists_path = os_path.exists(path)
 
 
 if __name__ == "__main__":
