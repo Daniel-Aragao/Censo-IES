@@ -2,9 +2,14 @@ from config import Config
 from importer import Importer
 from db.database import Database
 from api.updateStructController import UpdateStructController
+from api.importDataController import ImportDataController
 from os import path as os_path
 
 #/mnt/chromeos/removable/SD Card/Diplan/Dicionário_de_Dados 2017.xlsx
+#/mnt/chromeos/removable/SD Card/Diplan/DM_CURSO_2017.CSV
+#/mnt/chromeos/removable/SD Card/Diplan/DM_IES_2017.CSV
+#/mnt/chromeos/removable/SD Card/Diplan/DM_ALUNO_2017.CSV
+
 def main_menu(controller):
     selection = -1
     print("========================= Menu Principal =========================\n")
@@ -113,6 +118,9 @@ def import_structure(controller):
         print("Importe um dicionário de dados\n")
         path = input("Caminho para o arquivo: ")
         exists_path = os_path.exists(path)
+                
+        if not exists_path:
+            print("Caminho inválido")
 
     updateController = UpdateStructController(
         controller["db"], config=controller["main_config"])
@@ -176,25 +184,81 @@ def import_structure(controller):
 
     return -1
     
+def chose_data_table_menu(db):
+    not_created_tables_names, created_tables_names = db.get_existent_data_table()
+    selection = -1
+    
+    while selection < 0 or selection > len(created_tables_names):
+        print("Selecione uma das tabelas abaixo para importar :\n")
+        print("\t0. Menu principal\n")
+        
+        
+        for index, table_name in enumerate(created_tables_names):
+            print("\t"+str(index+1)+". "+ table_name +"\n")
+        
+        aux = input("Seleção [0, " + str(len(created_tables_names)) + "]: ")
+            
+        if aux:
+            selection = int(aux)
+    
+    if not selection:
+        return 0
+    
+    return created_tables_names[selection - 1]
+        
 
 def import_data(controller):
     print("========================= Importar novos dados =========================\n")
-
-    exists_path = False
-
-    while not exists_path:
-        print("Importe um conjunto de dados\n")
-        path = input("Caminho para o arquivo: ")
-        exists_path = os_path.exists(path)
+    
+    choosen_table_name = chose_data_table_menu(controller["db"])
+    
+    if(choosen_table_name):
+        selection = -1
+        
+        while selection < 0 or selection > 2:
+            print("========== Tabela " + choosen_table_name + " ==========\n")
+            print("Selecione uma das ações abaixo:\n")
+            print("\t0. Sair do programa\n")
+            print("\t1. Menu principal\n")
+            print("\t2. Importar dados\n")
+            
+            aux = input("Seleção (0,1,2): ")
+                
+            if aux:
+                selection = int(aux)
+        
+        if not selection:
+            return 0
+        elif selection == 1:
+            return -1
+        elif selection == 2:
+            exists_path = False
+        
+            while not exists_path:
+                print("Importe um conjunto de dados\n")
+                path = input("Caminho para o arquivo: ")
+                exists_path = os_path.exists(path)
+                
+                if not exists_path:
+                    print("Caminho inválido")
+        
+            importDataController = ImportDataController(
+                controller["db"], config=controller["main_config"], path=path)
+            
+            print("Iniciando importação...")
+            print("Obs.: Quanto maior o arquivo mais lenta sua importação")
+            importDataController.import_data()
+            print("Finalizando importação...")
+            
+    return -1
 
 
 if __name__ == "__main__":
     main_config = Config('config.json')
-    db = Database(main_config.parse()[
-                  "database_access"], main_config.parse()["censo_databases"])
+    db = Database(main_config.parse()["database_access"], main_config.parse()["censo_databases"])
 
     controller = {"path": "", "main_config": main_config, "db": db}
-    menus = [main_menu, import_structure]
+    menus = [main_menu, import_structure, import_data]
     menu_number = 0
     selection = -1
 

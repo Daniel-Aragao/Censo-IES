@@ -8,9 +8,8 @@ class StructureDAO:
     data_suffix = "_data"
     struct_suffix = "_struct"
 
-    def __init__(self, connector: Connector, access_config, database_config):
+    def __init__(self, connector: Connector, database_config):
         self.connector = connector
-        self.access_config = access_config
         self.database_config = database_config
 
     def get_fields(self, structure_name):

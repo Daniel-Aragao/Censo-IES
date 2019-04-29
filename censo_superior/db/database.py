@@ -1,5 +1,6 @@
 from db.connector import Connector
 from db.structure_dao import StructureDAO
+from db.data_dao import DataDAO
 
 
 class Database:
@@ -11,45 +12,40 @@ class Database:
 
         self.connector = Connector(access_config)
         self.connector.create_db(check_if_exists=True)
-
-        # self.__create_general_struct_table()
-
+        
         self.__create_structs_tables()
 
-        self.structure_dao = StructureDAO(self.connector, access_config, database_config)
-
-    # def __create_general_struct_table(self):
-    # (add this property in config.json in censo_databases) "struct_table_name": "structure"
-    #     exists, tables_names = self.connector.exist_tables(
-    #         [self.database_config["struct_table_name"]])
-
-    #     if not exists:
-    #         connection = self.connector.make_connection()
-
-    #         connection.execute("CREATE TABLE " + tables_names[0] + "( "
-    #                            "id INT AUTO_INCREMENT PRIMARY KEY,"
-    #                            "data_table_name VARCHAR(255), "
-    #                            "data_struct_table_name VARCHAR(255) NOT NULL,"
-    #                            "struct_insertion_date DATE NOT NULL"
-    #                            ")")
-
-    #         self.connector.close_connection()
+        self.structure_dao = StructureDAO(self.connector, database_config)
+        self.data_dao = DataDAO(self.connector, database_config)
+        
+    def get_existent_structures(self):
+        """
+        Access the database and get the struct tables available
+        return not_created_tables_names: [str], created_tables_names: [str]
+        """
+        struct_tables = [table + StructureDAO.struct_suffix for table in self.database_config["tables"]]
+        return self.connector.exist_tables(struct_tables)
+        
+    def get_existent_data_table(self):
+        """
+        Access the database and get the data tables available
+        return not_created_tables_names: [str], created_tables_names: [str]
+        """
+        data_tables = [table + StructureDAO.data_suffix for table in self.database_config["tables"]]
+        return self.connector.exist_tables(data_tables)
 
     def __create_structs_tables(self):
-        struct_tables = [table + StructureDAO.struct_suffix for table in self.database_config["tables"]]
-        data_tables = [table + StructureDAO.data_suffix for table in self.database_config["tables"]]
+        not_created_struct_tables_names, created_struct_tables_names = self.get_existent_structures()
+        not_created_data_tables_names, created_data_tables_names = self.get_existent_data_table()
 
-        struct_exists, struct_tables_names = self.connector.exist_tables(struct_tables)
-        data_exists, data_tables_names = self.connector.exist_tables(data_tables)
-
-        if not struct_exists:
+        if not len(not_created_struct_tables_names):
             connection = self.connector.make_connection()
 
-            for table_name in struct_tables_names:
+            for table_name in not_created_struct_tables_names:
                 connection.execute("CREATE TABLE " + table_name + " ("
                     "id INT AUTO_INCREMENT PRIMARY KEY,"
                     "field_name VARCHAR(100) UNIQUE NOT NULL,"
-                    "field_description TEXT," 
+                    "field_description TEXT,"
                     "synonymous TEXT NOT NULL,"
                     "field_type VARCHAR(30),"
                     "insertion_date DATE NOT NULL,"
@@ -60,10 +56,10 @@ class Database:
             self.connector.close_connection()
                 
         
-        if not data_exists:
+        if not len(not_created_data_tables_names):
             connection = self.connector.make_connection()
 
-            for table_name in data_tables_names:
+            for table_name in not_created_data_tables_names:
                 connection.execute("CREATE TABLE " + table_name + " ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY"
                                     ")")

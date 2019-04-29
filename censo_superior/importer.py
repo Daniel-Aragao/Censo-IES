@@ -7,6 +7,20 @@ from config import Config
 
 class Importer:
     config = None
+    
+    @staticmethod
+    def import_csv_header(path: str, config=None):
+        if config:
+            Importer.config = config.parse()
+        
+        data_file_config = Importer.config["data_csv_file"]
+        lines_limit = data_file_config["lines_limit"]
+        
+        with open(path, encoding=data_file_config["encoding"]) as file_obj_control:
+            reader = csv.DictReader(file_obj_control, delimiter=data_file_config["delimiter"])
+            fields = rader.fieldnames
+            
+        return fields
 
     @staticmethod
     def import_csv(path: str, config=None):

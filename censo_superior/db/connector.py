@@ -8,7 +8,7 @@ class Connector:
             name = database name
             user = user to connect
             password = password to connect (won't save it)
-            host = address to the database server            
+            host = address to the database server
         """
 
         self.name = config["name"]
@@ -25,7 +25,7 @@ class Connector:
         self.connection = None
     
     def make_connection(self, use_db=True):
-        # TODO: Observar implicações no parametro buffered=True abaixo:        
+        # TODO: Observar implicações no parametro buffered=True abaixo:
         self.connection = self.__db_connector.cursor(buffered=True)
 
         if use_db:
@@ -70,14 +70,17 @@ class Connector:
         self.connection.execute("SHOW TABLES")
 
         not_created = []
+        created = []
         
         db_tables = [db[0] for db in self.connection]
 
         for table_name in tables_names:
             if not (table_name in db_tables):
                 not_created.append(table_name)
+            else:
+                created.append(table_name)
         
         self.close_connection()
 
-        return (not bool(len(not_created))), not_created
+        return not_created, created
         
