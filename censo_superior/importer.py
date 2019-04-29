@@ -18,17 +18,18 @@ class Importer:
         
         with open(path, encoding=data_file_config["encoding"]) as file_obj_control:
             reader = csv.DictReader(file_obj_control, delimiter=data_file_config["delimiter"])
-            fields = rader.fieldnames
+            fields = reader.fieldnames
             
         return fields
 
     @staticmethod
-    def import_csv(path: str, config=None):
+    def import_csv(path: str, config=None, bulk=None):
         if config:
             Importer.config = config.parse()
         
         data_file_config = Importer.config["data_csv_file"]
         lines_limit = data_file_config["lines_limit"]
+        bulk_limit = data_file_config["bulk_limit"]
         
         lines = []
         count = 0
@@ -40,10 +41,18 @@ class Importer:
                 lines.append(row)
                 
                 count += 1
+                
+                if bulk and count%bulk_limit and len(lines):
+                    bulk(lines)
+                    lines = []
+                
                 if lines_limit and count >= lines_limit:
                     break
         
-        return lines
+        if bulk and len(lines):
+            bulk(lines)
+        else:
+            return lines
 
     @staticmethod
     def import_workbook(path):

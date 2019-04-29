@@ -243,7 +243,7 @@ def import_data(controller):
                     print("Caminho inválido")
         
             importDataController = ImportDataController(
-                controller["db"], config=controller["main_config"], path=path)
+                controller["db"], config=controller["main_config"], path=path, table_name=choosen_table_name)
             
             print("Iniciando importação...")
             print("Obs.: Quanto maior o arquivo mais lenta sua importação")

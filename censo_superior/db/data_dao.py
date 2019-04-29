@@ -10,5 +10,16 @@ class DataDAO:
         self.connector = connector
         self.database_config = database_config
     
-    def add_fields(fields, commit=False):
-        pass
+    def add_fields(fields, table_name, columns, use_connection=None):
+        if not use_connection:
+            connection = self.connector.make_connection()
+        else:
+            connection = use_connection
+            
+        sql_insert = "INSERT INTO " + table_name + \
+            "(" + ",".join([i for i in columns]) + ") VALUES (" + + ")"
+            
+        if not use_connection:
+            self.connector.commit()
+            self.connector.close_connection()
+            

@@ -26,7 +26,8 @@
     "data_csv_file": {
       "delimiter": "|",
       "encoding": "iso-8859-14",
-      "lines_limit": 1
+      "lines_limit": 0,
+      "bulk_limit": 100
     },
     "database_access": {
         "name": "diplan_censo",
