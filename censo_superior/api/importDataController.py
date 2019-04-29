@@ -24,7 +24,6 @@ class ImportDataController:
             if not len(db_entries):
                 raise Exception("Nenhum sinônimo encontrado para o campo informado: " + csv_header)
                 
-                
             if len(db_entries) > 1:
                 for db_entry in db_entries:
                     synonymous = db_entry[db_entries_map["synonymous"]].split(",")
@@ -38,15 +37,11 @@ class ImportDataController:
             else:
                 selected_entry = db_entries[0]
             
-            print(type(selected_entry[db_entries_map["ignore_field_import"]]), selected_entry[db_entries_map["ignore_field_import"]])
-            
-            raise Exception("oi")
-            
             header_map[csv_header] = {
                 "field_name": selected_entry[db_entries_map["field_name"]].upper(),
                 "field_type": selected_entry[db_entries_map["field_type"]].upper(),
-                "ignore_field_import": selected_entry[db_entries_map["ignore_field_import"]],
-                "ignore_field_creation": selected_entry[db_entries_map["ignore_field_creation"]]
+                "ignore_field_import": bool(selected_entry[db_entries_map["ignore_field_import"]]),
+                "ignore_field_creation": bool(selected_entry[db_entries_map["ignore_field_creation"]])
             }
             
         return header_map
@@ -70,15 +65,19 @@ class ImportDataController:
                 cells = []
                 
                 for header_map_key in header_map_keys:
-                    if header_map[header_map_key]["field_type"].find("INT") > -1:
-                        cell_value = int(line[header_map_key])
+                    if line[header_map_key]:
+                        if header_map[header_map_key]["field_type"].find("NUM") > -1:
+                                cell_value = int(line[header_map_key])
+                            
+                        elif header_map[header_map_key]["field_type"].find("CHAR") > -1:
+                            if line[header_map_key]:
+                                cell_value = line[header_map_key]
                         
-                    elif header_map[header_map_key]["field_type"].find("TEXT") > -1:
-                        cell_value = line[header_map_key]
-                    
+                        else:
+                            raise Exception("Unsupported type: " + str(header_map[header_map_key]["field_type"]))
                     else:
-                        raise Exception("Unsupported type")
-            
+                        cell_value = ""
+                        
                     cells.append(cell_value)
                 
                 fields.append(cells)

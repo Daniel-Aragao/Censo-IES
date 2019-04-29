@@ -81,12 +81,14 @@ class StructureDAO:
     def get_by_synonym(self, table, synonym):
         connection = self.connector.make_connection()
         
-        sql_select = "SELECT  id, field_name, synonymous, field_type, ignore_field_import, ignore_field_creation from "
+        sql_select = "SELECT id, field_name, synonymous, field_type, ignore_field_import, ignore_field_creation FROM "
         sql_select += table.replace(StructureDAO.data_suffix, StructureDAO.struct_suffix)
-        sql_select += " WHERE synonymous LIKE \"%" + synonym + "%\""
+        sql_select += " WHERE synonymous LIKE '%" + synonym + "%'"
+        
+        connection.execute(sql_select)
         
         fetched_data = connection.fetchall()
 
         self.connector.close_connection()
         
-        return fetched_data, {"id": 0, "field_name": 1, "synonymous": 2, "field_type": 3, "ignore_field_import": 5, "ignore_field_creation": 6}
+        return fetched_data, {"id": 0, "field_name": 1, "synonymous": 2, "field_type": 3, "ignore_field_import": 4, "ignore_field_creation": 5}
