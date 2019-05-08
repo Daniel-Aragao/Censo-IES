@@ -38,7 +38,7 @@ class Database:
         not_created_struct_tables_names, created_struct_tables_names = self.get_existent_structures()
         not_created_data_tables_names, created_data_tables_names = self.get_existent_data_table()
 
-        if not len(not_created_struct_tables_names):
+        if len(not_created_struct_tables_names):
             connection = self.connector.make_connection()
 
             for table_name in not_created_struct_tables_names:
@@ -56,7 +56,7 @@ class Database:
             self.connector.close_connection()
                 
         
-        if not len(not_created_data_tables_names):
+        if len(not_created_data_tables_names):
             connection = self.connector.make_connection()
 
             for table_name in not_created_data_tables_names:

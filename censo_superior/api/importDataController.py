@@ -2,6 +2,7 @@ from importer import Importer
 from db.database import Database
 from config import Config
 from sheet import Sheet
+import re
 
 
 class ImportDataController:
@@ -65,13 +66,18 @@ class ImportDataController:
                 cells = []
                 
                 for header_map_key in header_map_keys:
-                    if line[header_map_key]:
+                    cell_value = line[header_map_key]
+                    if cell_value:
                         if header_map[header_map_key]["field_type"].find("NUM") > -1:
-                                cell_value = int(line[header_map_key])
-                            
+                            if not cell_value.isnumeric():
+                                cell_value = re.sub(r"\D", "", cell_value)
+                            cell_value = int(cell_value)
+
                         elif header_map[header_map_key]["field_type"].find("CHAR") > -1:
-                            if line[header_map_key]:
-                                cell_value = line[header_map_key]
+                            if cell_value:
+                                cell_value = cell_value
+                            else:
+                                cell_value = ""
                         
                         else:
                             raise Exception("Unsupported type: " + str(header_map[header_map_key]["field_type"]))
@@ -81,7 +87,7 @@ class ImportDataController:
                     cells.append(cell_value)
                 
                 fields.append(cells)
-            
+            #print("connection:",connection)
             ddao.add_fields(fields, self.table_name, header_map_columns, use_connection=connection)
         
         Importer.import_csv(self.path_to_file, self.main_config, bulk_function)
