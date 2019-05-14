@@ -17,7 +17,7 @@ class DataDAO:
             connection = use_connection
         
         sql_insert = "INSERT INTO " + table_name + \
-            "(" + ",".join([i for i in columns]) + ") VALUES (" + ",".join(["%" for i in columns]) + ")"
+            "(" + ",".join([i for i in columns]) + ") VALUES (" + ",".join(["%s" for i in columns]) + ")"
         sql_insert = sql_insert.replace(",)", ")")
         
         print(sql_insert, fields)
