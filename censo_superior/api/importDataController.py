@@ -71,13 +71,12 @@ class ImportDataController:
                     if header_map[header_map_key]["field_type"].find("NUM") > -1:
                         if cell_value:
                             if not cell_value.isnumeric():
-                                cell_value = re.sub(r"\D", "", cell_value)
+                                cell_value = re.sub(r"[^.0-9]", "", cell_value)
 
                             if not cell_value:
                                 cell_value = 0
                             else: 
-                                cell_value = int(cell_value)
-                            
+                                cell_value = float(cell_value)                            
 
                         else:
                             cell_value = 0

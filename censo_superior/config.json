@@ -3,7 +3,7 @@
         "tables": ["ALUNO", "CURSO", "IES"],
         "types":{
             "char": "TEXT",
-            "num": "INT"
+            "num": "NUMERIC"
         }
     },
     "dictionary": {
