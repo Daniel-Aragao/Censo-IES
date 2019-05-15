@@ -67,22 +67,29 @@ class ImportDataController:
                 
                 for header_map_key in header_map_keys:
                     cell_value = line[header_map_key]
-                    if cell_value:
-                        if header_map[header_map_key]["field_type"].find("NUM") > -1:
+                    
+                    if header_map[header_map_key]["field_type"].find("NUM") > -1:
+                        if cell_value:
                             if not cell_value.isnumeric():
                                 cell_value = re.sub(r"\D", "", cell_value)
-                            cell_value = int(cell_value)
 
-                        elif header_map[header_map_key]["field_type"].find("CHAR") > -1:
-                            if cell_value:
-                                cell_value = cell_value
-                            else:
-                                cell_value = ""
-                        
+                            if not cell_value:
+                                cell_value = 0
+                            else: 
+                                cell_value = int(cell_value)
+                            
+
                         else:
-                            raise Exception("Unsupported type: " + str(header_map[header_map_key]["field_type"]))
+                            cell_value = 0
+
+                    elif header_map[header_map_key]["field_type"].find("CHAR") > -1:
+                        if cell_value:
+                            cell_value = cell_value
+                        else:
+                            cell_value = ""
+                    
                     else:
-                        cell_value = ""
+                        raise Exception("Unsupported type: " + str(header_map[header_map_key]["field_type"]))
                         
                     cells.append(cell_value)
                 

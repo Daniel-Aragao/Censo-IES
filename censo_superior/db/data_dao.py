@@ -18,10 +18,10 @@ class DataDAO:
         
         sql_insert = "INSERT INTO " + table_name + \
             "(" + ",".join([i for i in columns]) + ") VALUES (" + ",".join(["%s" for i in columns]) + ")"
-        sql_insert = sql_insert.replace(",)", ")")
+        # sql_insert = sql_insert.replace(",)", ")")
         
-        print(sql_insert, fields)
-        connection.execute(sql_insert, fields)
+        # print(sql_insert, fields, len(fields))
+        connection.executemany(sql_insert, fields)
 
         if not use_connection:
             self.connector.commit()

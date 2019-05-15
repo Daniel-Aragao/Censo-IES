@@ -42,9 +42,10 @@ class Importer:
                 
                 count += 1
                 
-                if bulk and count%bulk_limit and len(lines):
+                if bulk and not (count % bulk_limit) and len(lines):
                     bulk(lines)
                     lines = []
+                    # print("Progresso: " + str(count/file_obj_control))
                 
                 if lines_limit and count >= lines_limit:
                     break
