@@ -24,8 +24,9 @@
         "header_line": 1
     },
     "data_csv_file": {
-      "delimiter": "|",
-      "encoding": "iso-8859-14",
+      "delimiter": ",",
+      "encoding": "Windows 1252",
+      "encoding2": "iso-8859-14",
       "lines_limit": 0,
       "bulk_limit": 100
     },

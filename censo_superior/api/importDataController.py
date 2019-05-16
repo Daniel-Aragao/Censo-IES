@@ -15,7 +15,7 @@ class ImportDataController:
     
     def __build_header_map(self):
         csv_headers = Importer.import_csv_header(self.path_to_file, self.main_config)
-        
+        # print(csv_headers)
         header_map = {}
         
         for csv_header in csv_headers:
@@ -23,7 +23,7 @@ class ImportDataController:
             db_entries, db_entries_map = self.db.structure_dao.get_by_synonym(self.table_name, csv_header)
             
             if not len(db_entries):
-                raise Exception("Nenhum sinônimo encontrado para o campo informado: " + csv_header)
+                raise Exception("Nenhum sinônimo encontrado para o campo informado ("+csv_header+"), tente importar o dicionário de dados equivalente ao ano do dado.")
                 
             if len(db_entries) > 1:
                 for db_entry in db_entries:
