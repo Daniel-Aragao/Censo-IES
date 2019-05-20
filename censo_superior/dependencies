@@ -1,0 +1,7 @@
+PIP:
+	xlrd
+	mysql-connector
+	pandas
+
+APT-GET:
+	python-qt4
