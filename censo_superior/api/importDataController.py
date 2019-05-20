@@ -15,7 +15,6 @@ class ImportDataController:
     
     def __build_header_map(self):
         csv_headers = Importer.import_csv_header(self.path_to_file, self.main_config)
-        # print(csv_headers)
         header_map = {}
         
         for csv_header in csv_headers:
@@ -75,8 +74,8 @@ class ImportDataController:
 
                             if not cell_value:
                                 cell_value = 0
-                            else: 
-                                cell_value = float(cell_value)                            
+                            else:
+                                cell_value = float(cell_value)
 
                         else:
                             cell_value = 0

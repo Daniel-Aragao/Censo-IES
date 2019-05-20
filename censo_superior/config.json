@@ -3,7 +3,7 @@
         "tables": ["ALUNO", "CURSO", "IES"],
         "types":{
             "char": "TEXT",
-            "num": "NUMERIC"
+            "num": "DECIMAL(15,3)"
         }
     },
     "dictionary": {
@@ -24,7 +24,7 @@
         "header_line": 1
     },
     "data_csv_file": {
-      "delimiter": ",",
+      "delimiter": "|",
       "encoding": "Windows 1252",
       "encoding2": "iso-8859-14",
       "lines_limit": 0,
