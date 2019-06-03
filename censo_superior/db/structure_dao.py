@@ -18,7 +18,7 @@ class StructureDAO:
         connection = self.connector.make_connection()
 
         connection.execute(
-            "SELECT  id, field_name, synonymous, field_type, insertion_date, ignore_field_import FROM " + structure_name)
+            "SELECT  id, field_name, synonymous, field_type, insertion_date, ignore_field_import FROM " + structure_name.lower())
         fetched_data = connection.fetchall()
 
         self.connector.close_connection()
@@ -38,7 +38,7 @@ class StructureDAO:
 
     def add_fields(self, structure_name, field_dict):
         connection = self.connector.make_connection()
-        sql_insert = "INSERT INTO " + structure_name + StructureDAO.struct_suffix + \
+        sql_insert = "INSERT INTO " + structure_name.lower() + StructureDAO.struct_suffix + \
             "(field_name, field_description, synonymous, field_type, insertion_date, ignore_field_import, last_field_update) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 
         time_now = time.strftime('%Y-%m-%d %H:%M:%S')

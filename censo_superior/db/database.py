@@ -32,11 +32,11 @@ class Database:
         Access the database and get the tables available
         return (not_created_tables_names: [str], created_tables_names: [str])
         """
-        return get_existent_tables(StructureDAO.data_suffix)
+        return self.get_existent_tables(StructureDAO.data_suffix)
 
     def __create_structs_tables(self):
         not_created_struct_tables_names, created_struct_tables_names = self.get_existent_tables(StructureDAO.struct_suffix)
-        not_created_data_tables_names, created_data_tables_names = self.get_existent_tables(StructureDAO.data_suffix)
+        not_created_data_tables_names, created_data_tables_names = self.get_existent_data_table()
 
         if len(not_created_struct_tables_names):
             connection = self.connector.make_connection()
