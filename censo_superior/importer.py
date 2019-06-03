@@ -36,7 +36,7 @@ class Importer:
 
         with open(path, encoding=data_file_config["encoding"]) as file_obj_control:
             reader = csv.DictReader(file_obj_control, delimiter=data_file_config["delimiter"])
-            
+            #len(reader)
             for row in reader:
                 lines.append(row)
                 

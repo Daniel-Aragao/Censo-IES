@@ -1,6 +1,6 @@
 {
     "censo_databases": {
-        "tables": ["ALUNO", "CURSO", "IES"],
+        "tables": ["aluno", "curso", "ies"],
         "types":{
             "char": "TEXT",
             "num": "DECIMAL(15,3)"
@@ -28,7 +28,7 @@
       "encoding": "Windows 1252",
       "encoding2": "iso-8859-14",
       "lines_limit": 0,
-      "bulk_limit": 100
+      "bulk_limit": 10000
     },
     "database_access": {
         "name": "diplan_censo",

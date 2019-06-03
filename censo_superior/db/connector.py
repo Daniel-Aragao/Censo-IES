@@ -19,7 +19,8 @@ class Connector:
         self.__db_connector = mysql.connector.connect(
                 host=self.host,
                 user=self.user,
-                passwd=config["password"]
+                passwd=config["password"],
+                auth_plugin="mysql_native_password"
             )
         
         self.connection = None

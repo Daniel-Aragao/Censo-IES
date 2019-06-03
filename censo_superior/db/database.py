@@ -18,31 +18,31 @@ class Database:
         self.structure_dao = StructureDAO(self.connector, database_config)
         self.data_dao = DataDAO(self.connector, database_config)
         
-    def get_existent_structures(self):
+    def get_existent_tables(self, suffix=""):
         """
-        Access the database and get the struct tables available
-        return not_created_tables_names: [str], created_tables_names: [str]
+        Access the database and get the tables available
+        return (not_created_tables_names: [str], created_tables_names: [str])
         """
-        struct_tables = [table + StructureDAO.struct_suffix for table in self.database_config["tables"]]
+        struct_tables = [table.lower() + suffix for table in self.database_config["tables"]]
         return self.connector.exist_tables(struct_tables)
         
+    
     def get_existent_data_table(self):
         """
-        Access the database and get the data tables available
-        return not_created_tables_names: [str], created_tables_names: [str]
+        Access the database and get the tables available
+        return (not_created_tables_names: [str], created_tables_names: [str])
         """
-        data_tables = [table + StructureDAO.data_suffix for table in self.database_config["tables"]]
-        return self.connector.exist_tables(data_tables)
+        return get_existent_tables(StructureDAO.data_suffix)
 
     def __create_structs_tables(self):
-        not_created_struct_tables_names, created_struct_tables_names = self.get_existent_structures()
-        not_created_data_tables_names, created_data_tables_names = self.get_existent_data_table()
+        not_created_struct_tables_names, created_struct_tables_names = self.get_existent_tables(StructureDAO.struct_suffix)
+        not_created_data_tables_names, created_data_tables_names = self.get_existent_tables(StructureDAO.data_suffix)
 
         if len(not_created_struct_tables_names):
             connection = self.connector.make_connection()
 
             for table_name in not_created_struct_tables_names:
-                connection.execute("CREATE TABLE " + table_name + " ("
+                connection.execute("CREATE TABLE " + table_name.lower() + " ("
                     "id INT AUTO_INCREMENT PRIMARY KEY,"
                     "field_name VARCHAR(100) UNIQUE NOT NULL,"
                     "field_description TEXT,"
@@ -60,7 +60,7 @@ class Database:
             connection = self.connector.make_connection()
 
             for table_name in not_created_data_tables_names:
-                connection.execute("CREATE TABLE " + table_name + " ("
+                connection.execute("CREATE TABLE " + table_name.lower() + " ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY"
                                     ")")
 
