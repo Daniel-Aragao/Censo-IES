@@ -69,7 +69,7 @@ class StructureDAO:
     def update_synonym(self, table, new_synonyms):
         connection = self.connector.make_connection()
 
-        sql_update = "UPDATE " + table + StructureDAO.struct_suffix + " SET synonymous = synonymous + %s WHERE id = %s"
+        sql_update = "UPDATE " + table + StructureDAO.struct_suffix + " SET synonymous = synonymous + ',' + %s WHERE id = %s"
 
         try:
             last_synonym = 0
@@ -82,7 +82,7 @@ class StructureDAO:
         except Exception as err:
             self.connector.rollback()
             
-            print("Erro running SQL: " + sql_udpdate + " with data: " + last_synonym)
+            print("Erro running SQL: " + sql_update + " with data: " + last_synonym)
             print(err)
 
         self.connector.close_connection()
