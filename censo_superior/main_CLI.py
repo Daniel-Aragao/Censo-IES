@@ -3,7 +3,9 @@ from importer import Importer
 from db.database import Database
 from api.updateStructController import UpdateStructController
 from api.importDataController import ImportDataController
+
 from os import path as os_path
+import trackeback
 
 #/mnt/chromeos/removable/SD Card/Diplan/Dicionário_de_Dados 2017.xlsx
 #/mnt/chromeos/removable/SD Card/Diplan/DM_CURSO_2017.CSV
@@ -247,8 +249,15 @@ def import_data(controller):
             
             print("Iniciando importação...")
             print("Obs.: Quanto maior o arquivo mais lenta sua importação")
-            importDataController.import_data()
-            print("Finalizando importação...")
+            start_time = time.time()
+
+            try:
+                importDataController.import_data()
+                minutes = (time.time() - start_time) / 60
+                print("Finalizando importação com sucesso..." + minutes + " minutos")
+            except Exception as ex:
+                # trackeback.print
+                print("Finalizando importação com FALHA..." + minutes + " minutos")
             
     return -1
 
