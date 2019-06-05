@@ -71,10 +71,19 @@ class StructureDAO:
 
         sql_update = "UPDATE " + table + StructureDAO.struct_suffix + " SET synonymous = synonymous + %s WHERE id = %s"
 
-        for new_synonym in new_synonyms:
-            connection.execute(sql_update, new_synonym)
-
-        self.connector.commit()
+        try:
+            last_synonym = 0
+            
+            for new_synonym in new_synonyms:
+                last_synonym = new_synonym
+                connection.execute(sql_update, new_synonym)
+            
+            self.connector.commit()
+        except Exception as err:
+            self.connector.rollback()
+            
+            print("Erro running SQL: " + sql_udpdate + " with data: " + last_synonym)
+            print(err)
 
         self.connector.close_connection()
     
