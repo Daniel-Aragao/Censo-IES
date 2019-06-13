@@ -25,7 +25,10 @@ def main_menu(controller):
         aux = input("Seleção (0,1,2): ")
             
         if aux:
-            selection = int(aux)
+            try:
+                selection = int(aux)
+            except:
+                pass
 
     return selection
 
@@ -58,7 +61,10 @@ def importation_menu(table, updateController):
             aux = input("Seleção (0,1,2,3,4,5): ")
             
             if aux:
-                selection = int(aux)
+                try:
+                    selection = int(aux)
+                except:
+                    pass
 
         if not selection:
             return 0
@@ -80,7 +86,10 @@ def importation_menu(table, updateController):
                 aux = input("Digite o índice do campo que deseja configurar: ")
             
                 if aux:
-                    field_index = int(aux)
+                    try:
+                        field_index = int(aux)
+                    except:
+                        pass
 
             field = fields_diff_map[field_index - 1]
 
@@ -99,7 +108,10 @@ def importation_menu(table, updateController):
                 aux = input("Seleção (1,2,3): ")
             
                 if aux:
-                    field_action = int(aux)
+                    try:
+                        field_action = int(aux)
+                    except:
+                        pass
 
             if field_action == 2:
                 field["synonymous"] = input("Digite o sinonimo: ")
@@ -142,7 +154,10 @@ def import_structure(controller):
             aux = input("Selecione [0, " + str(len(imported_tables)) + "]: ")
             
             if aux:
-                choosen_table = int(aux)
+                try:
+                    choosen_table = int(aux)
+                except:
+                    pass
 
         return choosen_table
 
@@ -163,7 +178,10 @@ def import_structure(controller):
             aux = input("Seleção (0,1,2,3): ")
             
             if aux:
-                table_action = int(aux)
+                try:
+                    table_action = int(aux)
+                except:
+                    pass
 
         if not table_action:
             return table_action
@@ -201,7 +219,10 @@ def chose_data_table_menu(db):
         aux = input("Seleção [0, " + str(len(created_tables_names)) + "]: ")
             
         if aux:
-            selection = int(aux)
+            try:
+                selection = int(aux)
+            except:
+                pass
     
     if not selection:
         return 0
@@ -227,7 +248,10 @@ def import_data(controller):
             aux = input("Seleção (0,1,2): ")
                 
             if aux:
-                selection = int(aux)
+                try:
+                    selection = int(aux)
+                except:
+                    pass
         
         if not selection:
             return 0
