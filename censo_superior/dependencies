@@ -2,6 +2,7 @@ PIP:
 	xlrd
 	mysql-connector-python
 	pandas
+    ipdb
 
 APT-GET:
 	python-qt4

@@ -102,7 +102,7 @@ class Importer:
             Importer.config = config.parse()
             
         dict_config = Importer.config['dictionary']
-        label_number = dict_config["header_line"]
+        label_number = dict_config["header_line"] - 1
 
         excel = Importer.import_workbook(path)
         sheet_names = Importer.get_sheet_names_from_workbook(excel)
@@ -139,6 +139,7 @@ class Importer:
                 if include_row:
                     sheet.data.append(row_dict)
             
+            print(sheet.name,len(sheet.data))
             sheets[dict_config["sheets"][sheet_name]] = sheet
         
         return sheets

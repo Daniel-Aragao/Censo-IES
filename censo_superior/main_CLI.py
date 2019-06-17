@@ -5,7 +5,6 @@ from api.updateStructController import UpdateStructController
 from api.importDataController import ImportDataController
 
 from os import path as os_path
-import trackeback
 
 #/mnt/chromeos/removable/SD Card/Diplan/Dicionário_de_Dados 2017.xlsx
 #/mnt/chromeos/removable/SD Card/Diplan/DM_CURSO_2017.CSV
@@ -39,12 +38,10 @@ def importation_menu(table, updateController):
     print("Buscando campos...")
 
     diff_fields = updateController.parse(table)
-
+    
     for diff_field in diff_fields:  # diff_field = (name, description, type)
         fields_diff_map.append(
             {"name": diff_field[0], "description": diff_field[1], "synonymous": "", "import": True, "type": diff_field[2]})
-
-    print("ok\n")
 
     while(True):
         selection = -1
@@ -278,10 +275,11 @@ def import_data(controller):
             try:
                 importDataController.import_data()
                 minutes = (time.time() - start_time) / 60
-                print("Finalizando importação com sucesso..." + minutes + " minutos")
+                print("Finalizando importação com sucesso..." + str(minutes) + " minutos")
             except Exception as ex:
                 # trackeback.print
-                print("Finalizando importação com FALHA..." + minutes + " minutos")
+                minutes = (time.time() - start_time) / 60
+                print("Finalizando importação com FALHA..." + str(minutes) + " minutos")
             
     return -1
 

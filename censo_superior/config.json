@@ -21,7 +21,7 @@
             "category": {"name":"DESCRIÇÃO DAS CATEGORIAS", "mandatory": false},
             "obs": {"name": "OBSERVAÇÃO", "mandatory": false}
         },
-        "header_line": 1
+        "header_line": 2
     },
     "data_csv_file": {
       "delimiter": "|",

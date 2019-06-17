@@ -3,6 +3,8 @@ import time
 from structure import Field
 from db.connector import Connector
 
+import ipdb
+
 
 class StructureDAO:
     data_suffix = "_data"
@@ -76,6 +78,7 @@ class StructureDAO:
             
             for new_synonym in new_synonyms:
                 last_synonym = new_synonym
+                ipdb.set_trace()
                 connection.execute(sql_update, new_synonym)
             
             self.connector.commit()

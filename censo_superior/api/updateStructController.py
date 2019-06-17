@@ -16,6 +16,7 @@ class UpdateStructController:
         """
         self.__imported_dict = Importer.import_data_dictionary(
             path, config=self.main_config)
+            
         return list(self.__imported_dict.keys())
 
     def parse(self, table):
@@ -31,11 +32,14 @@ class UpdateStructController:
         obs.: The table name does not include suffixes _struct or _data
         """
         sheet = self.__imported_dict[table]
+        
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
             table + Database.struct_suffix)
-        diff_fields = []
+            
         new_fields = [(data["name"], data["description"], data["type"])
                       for data in sheet.data]
+                      
+        diff_fields = []
 
         if old_fields and len(old_fields):
             for new_field in new_fields:
