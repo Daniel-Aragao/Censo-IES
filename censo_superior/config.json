@@ -8,14 +8,14 @@
     },
     "dictionary": {
         "sheets": {
-            "DM_ALUNO_2016": "ALUNO",
-            "DM_CURSO_2016": "CURSO",
-            "DM_IES_2016": "IES"
+            "DM_ALUNO": "ALUNO",
+            "DM_CURSO": "CURSO",
+            "DM_IES": "IES"
         },
         "columns": {
             "ord": {"name": "ORD", "mandatory": true},
             "name": {"name": "NOME DA VARIÁVEL", "mandatory": true},
-            "description": {"name": "DESCRIÇÃO", "mandatory": true},
+            "description": {"name": "DESCRIÇÃO DA VARIÁVEL", "mandatory": true},
             "type": {"name": "TIPO", "mandatory": true},
             "size": {"name": "TAM", "mandatory": false},
             "category": {"name":"DESCRIÇÃO DAS CATEGORIAS", "mandatory": false},

@@ -133,8 +133,7 @@ class Importer:
                     if type(column) == float and math.isnan(column) :
                         if clean_columns[i]["mandatory"]:
                             include_row = False
-                            break
-                
+                            break                
                 
                 if include_row:
                     sheet.data.append(row_dict)

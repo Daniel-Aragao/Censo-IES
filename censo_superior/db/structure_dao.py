@@ -3,7 +3,7 @@ import time
 from structure import Field
 from db.connector import Connector
 
-import ipdb
+# import ipdb
 
 
 class StructureDAO:
@@ -45,9 +45,9 @@ class StructureDAO:
 
         time_now = time.strftime('%Y-%m-%d %H:%M:%S')
 
-        data_insert = map(lambda x: (x["name"], x["description"], x["name"], x["type"],
-                                     time_now, not x["import"], time_now), field_dict)
-
+        data_insert = list(map(lambda x: (x["name"], x["description"], x["name"], x["type"],
+                                     time_now, not x["import"], time_now), field_dict))
+        
         connection.executemany(sql_insert, data_insert)
 
         sql_alter = "ALTER TABLE " + structure_name + \
@@ -78,7 +78,7 @@ class StructureDAO:
             
             for new_synonym in new_synonyms:
                 last_synonym = new_synonym
-                ipdb.set_trace()
+                # ipdb.set_trace()
                 connection.execute(sql_update, new_synonym)
             
             self.connector.commit()
