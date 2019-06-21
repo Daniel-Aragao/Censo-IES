@@ -53,6 +53,7 @@ class Database:
                     "ignore_field_creation TINYINT(1) NOT NULL DEFAULT 0,"
                     "last_field_update DATE NOT NULL)")
 
+                print("Table created: " + str(table_name))
             self.connector.close_connection()
                 
         
@@ -63,5 +64,7 @@ class Database:
                 connection.execute("CREATE TABLE " + table_name.lower() + " ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY"
                                     ")")
+                                    
+                print("Table created: " + str(table_name))
 
             self.connector.close_connection()

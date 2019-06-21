@@ -40,6 +40,9 @@ class Connector:
     
     def commit(self):
         self.__db_connector.commit()
+
+    def rollback(self):
+        self.__db_connector.rollback()
         
     def exist_db(self):
         self.make_connection(use_db=False)
@@ -50,7 +53,7 @@ class Connector:
                 return True
         
         self.close_connection()
-
+        print("Database does not exist: " + str(self.name))
         return False
     
     def create_db(self, check_if_exists=True):
@@ -61,6 +64,7 @@ class Connector:
             self.make_connection(use_db=False)
 
             self.connection.execute("CREATE DATABASE " + self.name)
+            print("Database created: " + str(self.name))
 
             self.close_connection()
     
@@ -78,8 +82,10 @@ class Connector:
         for table_name in tables_names:
             if not (table_name in db_tables):
                 not_created.append(table_name)
+                print("Table does not exist: " + str(table_name))
             else:
                 created.append(table_name)
+                print("Table already exists:" + str(table_name))
         
         self.close_connection()
 

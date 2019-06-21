@@ -31,6 +31,7 @@ class UpdateStructController:
 
         obs.: The table name does not include suffixes _struct or _data
         """
+        table = table.lower()
         sheet = self.__imported_dict[table]
         
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
@@ -77,6 +78,7 @@ class UpdateStructController:
             table name: The table name does not include suffixes _struct or _data
             field_dict: [{"name":<str>, "description": <str>, "synonymous": <str>, "import": <boolean>, "type": <str>}]
         """
+        table = table.lower()
         # return [campos novos] (somente os que deram erro)
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
             table + Database.struct_suffix)
@@ -95,7 +97,7 @@ class UpdateStructController:
                         updated_id = next(
                             old_field[old_fields_key["id"]] for old_field in old_fields if old_field[old_fields_key["field_name"]] == synonym)
 
-                        new_synonym.append((synonym, updated_id))
+                        new_synonym.append((field_dict["name"], updated_id))
 
                     except StopIteration as e:
                         errors.append(field_dict)

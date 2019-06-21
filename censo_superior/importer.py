@@ -138,7 +138,7 @@ class Importer:
                 if include_row:
                     sheet.data.append(row_dict)
             
-            print(sheet.name,len(sheet.data))
+            # print(sheet.name,len(sheet.data))
             sheets[dict_config["sheets"][sheet_name]] = sheet
         
         return sheets
