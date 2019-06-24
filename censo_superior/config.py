@@ -14,7 +14,7 @@ class Config:
     
     def parse(self):
         if not self.__config_structure:
-            with open(self.__path, 'r') as file_obj:
+            with open(self.__path, 'r', encoding="utf8") as file_obj:
                 string = file_obj.read().replace('\n', '')
                 
                 self.__config_structure = JSON.loads(string)
