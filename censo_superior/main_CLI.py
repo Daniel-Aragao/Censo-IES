@@ -5,30 +5,43 @@ from api.updateStructController import UpdateStructController
 from api.importDataController import ImportDataController
 
 from os import path as os_path
+import time
 
 #/mnt/chromeos/removable/SD Card/Diplan/Dicionário_de_Dados 2017.xlsx
 #/mnt/chromeos/removable/SD Card/Diplan/DM_CURSO_2017.CSV
 #/mnt/chromeos/removable/SD Card/Diplan/DM_IES_2017.CSV
 #/mnt/chromeos/removable/SD Card/Diplan/DM_ALUNO_2017.CSV
 
-def main_menu(controller):
+def select_option(text, options, start=0):
     selection = -1
-    print("========================= Menu Principal =========================\n")
-
-    while selection < 0 or selection > 2:
-        print("Selecione uma das ações abaixo:\n")
-        print("\t0. Sair do programa\n")
-        print("\t1. Importar nova estrutura\n")
-        print("\t2. Importar dados para estrutura já existente\n")
+    qtd_opts = len(options)
+    
+    while start > selection or selection > qtd_opts:
+        print(text,'\n')
         
-        aux = input("Seleção (0,1,2): ")
-            
-        if aux:
-            try:
-                selection = int(aux)
-            except:
-                pass
+        for i, option in enumerate(options):
+            print("\t" + str(i + start) + ".", option, "\n")
+        
+        selection = input("Seleção [" + str(start) + ", " + str(qtd_opts) + "]: ")
+        
+        try:
+            selection = int(selection)
+        except:
+            pass
+    
+    return selection
+    
 
+def main_menu(controller):
+    print("========================= Menu Principal =========================\n")
+    
+    selection = select_option("Selecione uma das ações abaixo:",
+    [
+        "Sair do programa",
+        "Importar nova estrutura",
+        "Importar dados para estrutura já existente"
+    ])
+    
     return selection
 
 
@@ -45,23 +58,16 @@ def importation_menu(table, updateController):
 
     while(True):
         selection = -1
-
-        while selection < 0 or selection > 5:
-            print("Selecione uma ação para a importação da tabela "+table+":\n")
-            print("\t0. Sair\n")
-            print("\t1. Voltar\n")
-            print("\t2. Exibir quantidade de campos\n")
-            print("\t3. Exibir campos (importados sem sinonimo encontrado)\n")
-            print("\t4. Configurar campo\n")
-            print("\t5. Salvar novos campos\n")
-            
-            aux = input("Seleção (0,1,2,3,4,5): ")
-            
-            if aux:
-                try:
-                    selection = int(aux)
-                except:
-                    pass
+        
+        selection = select_option("Selecione uma ação para a importação da tabela "+table+":",
+        [
+            "Sair",
+            "Voltar",
+            "Exibir quantidade de campos",
+            "Exibir campos  (importados sem sinonimo encontrado)",
+            "Configurar campo",
+            "Salvar novos campos e finalizar operação"
+        ])
 
         if not selection:
             return 0
@@ -77,47 +83,58 @@ def importation_menu(table, updateController):
                       field["synonymous"] + "\"", "\"" + str(field["import"]) + "\"", "\"" + field["description"].replace("\n", "\t") + "\"")
 
         elif selection == 4:
-            field_index = -1
-
-            while field_index < 1 or field_index > len(fields_diff_map):
-                aux = input("Digite o índice do campo que deseja configurar: ")
-            
-                if aux:
-                    try:
-                        field_index = int(aux)
-                    except:
-                        pass
-
-            field = fields_diff_map[field_index - 1]
-
-            field_action = -1
-            print("\nCampo: #" + str(field_index) + ". ")
-            print(field["name"], field["type"], field["synonymous"],
-                  field["import"], field["description"] + "\n")
-
-            while not field_action in [1, 2, 3]:
-                print("Selecione uma ação para o campo:\n")
-                print("\t1. Cancelar\n")
-                print("\t2. Adicionar sinonimo\n")
-                print(
-                    "\t3. " + ("Importar" if not field["import"] else "Não importar") + "\n")
+            if len(fields_diff_map) > 0:
+                field_index = -1
+    
+                while field_index < 1 or field_index > len(fields_diff_map):
+                    aux = input("Digite o índice do campo que deseja configurar: ")
                 
-                aux = input("Seleção (1,2,3): ")
-            
-                if aux:
-                    try:
-                        field_action = int(aux)
-                    except:
-                        pass
-
-            if field_action == 2:
-                field["synonymous"] = input("Digite o sinonimo: ")
-            elif field_action == 3:
-                field["import"] = not field["import"]
+                    if aux:
+                        try:
+                            field_index = int(aux)
+                        except:
+                            pass
+    
+                field = fields_diff_map[field_index - 1]
+    
+                field_action = -1
+                print("\nCampo: #" + str(field_index) + ". ")
+                print(field["name"], field["type"], field["synonymous"],
+                      field["import"], field["description"] + "\n")
+                      
+                field_action = select_option("Selecione uma ação para o campo:",
+                [
+                    "Cancelar",
+                    "Adicionar sinônimo",
+                    ("Importar" if not field["import"] else "Não importar")
+                ], start=1)
+    
+                if field_action == 2:
+                    field["synonymous"] = input("Digite o sinonimo: ")
+                elif field_action == 3:
+                    field["import"] = not field["import"]
 
         elif selection == 5:
-            updateController.save_table(table, fields_diff_map)
-            return -1
+            selection = -1
+            
+            qtd_synonymous = len([i for i in fields_diff_map if i["synonymous"]])
+            qtd_news = len(fields_diff_map) - qtd_synonymous
+            
+            text = "Você tem certeza que deseja finalizar e salvar todos os campos?"
+            text += "\n==> Campos configurados como sinônimos:" + str(qtd_synonymous)
+            text += "\n==> Campos configurados como novos:    " + str (qtd_news)
+            
+            selection = select_option(text,
+            [
+                "Finalizar e salvar",
+                "Voltar"
+            ], start=1)
+            
+            if selection == 1:
+                updateController.save_table(table, fields_diff_map)
+                return -1
+            elif selection == 2:
+                selection = -1
 
 
 def import_structure(controller):
@@ -139,22 +156,12 @@ def import_structure(controller):
     imported_tables = updateController.import_dict(path)
 
     def choose_table(imported_tables):
-        choosen_table = -1
-
-        while choosen_table < 0 or choosen_table > len(imported_tables):
-            print("Escolha uma das tabelas abaixo para trabalhar: \n")
-            print("\t0. Sair\n")
-
-            for index, imported_table in enumerate(imported_tables):
-                print("\t" + str(index + 1) + ". " + imported_table + "\n")
-                
-            aux = input("Selecione [0, " + str(len(imported_tables)) + "]: ")
-            
-            if aux:
-                try:
-                    choosen_table = int(aux)
-                except:
-                    pass
+        opts = ["Sair"]
+        
+        for imported_table in imported_tables:
+            opts.append(imported_table)
+        
+        choosen_table = select_option("Escolha uma das tabelas abaixo para trabalhar:", opts)
 
         return choosen_table
 
@@ -164,21 +171,7 @@ def import_structure(controller):
         print("========== Tabela " +
               imported_tables[choosen_table - 1] + " ==========\n")
 
-        table_action = -1
-        while not table_action in [0, 1, 2, 3]:
-            print("Selecione uma ação: \n")
-            print("\t0. Sair\n")
-            print("\t1. Menu principal\n")
-            print("\t2. Trocar tabela\n")
-            print("\t3. Importar\n")
-            
-            aux = input("Seleção (0,1,2,3): ")
-            
-            if aux:
-                try:
-                    table_action = int(aux)
-                except:
-                    pass
+        table_action = select_option("Selecione uma ação:", ["Sair", "Menu principal", "Trocar tabela", "Importar"])
 
         if not table_action:
             return table_action
@@ -190,8 +183,7 @@ def import_structure(controller):
             choosen_table = choose_table(imported_tables)
 
         else:
-            result = importation_menu(
-                imported_tables[choosen_table - 1], updateController)
+            result = importation_menu(imported_tables[choosen_table - 1], updateController)
 
             if not result:
                 choosen_table = result
@@ -205,21 +197,12 @@ def chose_data_table_menu(db):
     not_created_tables_names, created_tables_names = db.get_existent_data_table()
     selection = -1
     
-    while selection < 0 or selection > len(created_tables_names):
-        print("Selecione uma das tabelas abaixo para importar :\n")
-        print("\t0. Menu principal\n")
-        
-        
-        for index, table_name in enumerate(created_tables_names):
-            print("\t"+str(index+1)+". "+ table_name +"\n")
-        
-        aux = input("Seleção [0, " + str(len(created_tables_names)) + "]: ")
-            
-        if aux:
-            try:
-                selection = int(aux)
-            except:
-                pass
+    opts = []
+    
+    for table_name in created_tables_names:
+        opts.append(table_name)
+    
+    selection = select_option("Selecione uma das tabelas abaixo para importar:", ["Menu principal"] + opts)
     
     if not selection:
         return 0
@@ -235,20 +218,10 @@ def import_data(controller):
     if(choosen_table_name):
         selection = -1
         
-        while selection < 0 or selection > 2:
-            print("========== Tabela " + choosen_table_name + " ==========\n")
-            print("Selecione uma das ações abaixo:\n")
-            print("\t0. Sair do programa\n")
-            print("\t1. Menu principal\n")
-            print("\t2. Importar dados\n")
-            
-            aux = input("Seleção (0,1,2): ")
-                
-            if aux:
-                try:
-                    selection = int(aux)
-                except:
-                    pass
+        text = "========== Tabela " + choosen_table_name + " ==========\n"
+        text += "Selecione uma das ações abaixo:"
+        
+        selection = select_option(text, ["Sair do programa", "Menu principal", "Importar dados"])
         
         if not selection:
             return 0
@@ -275,11 +248,11 @@ def import_data(controller):
             try:
                 importDataController.import_data()
                 minutes = (time.time() - start_time) / 60
-                print("Finalizando importação com sucesso..." + str(minutes) + " minutos")
+                print("Finalizando importação com SUCESSO... em " + str(minutes) + " minutos")
             except Exception as ex:
                 # trackeback.print
                 minutes = (time.time() - start_time) / 60
-                print("Finalizando importação com FALHA..." + str(minutes) + " minutos")
+                print("Finalizando importação com FALHA... em " + str(minutes) + " minutos")
             
     return -1
 

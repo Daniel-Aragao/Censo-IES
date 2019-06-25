@@ -85,7 +85,7 @@ class Connector:
                 print("Table does not exist: " + str(table_name))
             else:
                 created.append(table_name)
-                print("Table already exists:" + str(table_name))
+                #print("Table already exists:" + str(table_name))
         
         self.close_connection()
 
