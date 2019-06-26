@@ -27,7 +27,7 @@ def select_option(text, options, start=0):
         try:
             selection = int(selection)
         except:
-            pass
+            selection = -1
     
     return selection
     
