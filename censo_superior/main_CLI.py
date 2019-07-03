@@ -22,7 +22,7 @@ def select_option(text, options, start=0):
         for i, option in enumerate(options):
             print("\t" + str(i + start) + ".", option, "\n")
         
-        selection = input("Seleção [" + str(start) + ", " + str(qtd_opts) + "]: ")
+        selection = input("Seleção [" + str(start) + ", " + str(qtd_opts - 1 + start ) + "]: ")
         
         try:
             selection = int(selection)
