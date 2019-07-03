@@ -64,7 +64,7 @@ class Database:
             for table_name in not_created_data_tables_names:
                 connection.execute("CREATE TABLE " + table_name.lower() + " ("
                                     "id INT AUTO_INCREMENT PRIMARY KEY,"
-                                    "import_year TINYINT NOT NULL"
+                                    "import_year SMALLINT NOT NULL"
                                     ")")
                                     
                 print("Table created: " + str(table_name))

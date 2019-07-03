@@ -76,7 +76,7 @@ def importation_menu(table, updateController):
         elif selection == 2:
             print("Quantidade de campos: " + str(len(fields_diff_map)))
         elif selection == 3:
-            print("Nome", "Tipo", "Sinonimos", "Importar", "Descrição\n")
+            print("Ordem dos valores\nNome", "Tipo", "Sinonimos", "Importar", "Descrição\n")
             print("----------------------------------------------------------------------\n")
             
             for index, field in enumerate(fields_diff_map):
@@ -89,7 +89,7 @@ def importation_menu(table, updateController):
                 field_index = -1
     
                 while field_index < 1 or field_index > len(fields_diff_map):
-                    aux = input("Digite o índice do campo que deseja configurar: ")
+                    aux = input("Digite o índice do campo que deseja configurar [1, " + str(len(fields_diff_map)) + "]: ")
                 
                     if aux:
                         try:
@@ -137,15 +137,31 @@ def importation_menu(table, updateController):
 
                 while (imported_year < 1000 or imported_year > 9999):
                     try:
-                        imported_year = int(input("O ano do dicionário a ser importado: "))
+                        imported_year = int(input("O ano do dicionário a ser importado (4 dígitos): "))
                     except:
                         print("Valor inválido")
 
                 for field in fields_diff_map:
                     field["imported_year"] = imported_year
 
-                updateController.save_table(table, fields_diff_map)
-                return -1
+                errors = updateController.save_table(table, fields_diff_map)
+
+                if not len(errors):
+                    return -1
+                else:
+                    print("\nErro(s) encontrado(s) no(s) campo(s)")
+                    print("Ordem dos valores\nNome", "Tipo", "Sinonimos", "Importar", "Descrição\n")
+                    
+                    for field in errors:
+                        field_index = fields_diff_map.index(field) + 1
+
+                        print("\nCampo: #" + str(field_index) + ". ")
+                        print(field["name"], field["type"], field["synonymous"],
+                            field["import"], field["description"] + "\n")
+                    
+                    print("Verificar se os sinônimos configurados estão corretos")
+
+                    selection = -1
             elif selection == 2:
                 selection = -1
 
@@ -250,9 +266,17 @@ def import_data(controller):
                 
                 if not exists_path:
                     print("Caminho inválido")
+
+            import_year = 0
+
+            while (import_year < 1000 or import_year > 9999):
+                try:
+                    import_year = int(input("O ano do dicionário do dado a ser importado (4 dígitos): "))
+                except:
+                    print("Valor inválido")
         
             importDataController = ImportDataController(
-                controller["db"], config=controller["main_config"], path=path, table_name=choosen_table_name)
+                controller["db"], config=controller["main_config"], path=path, table_name=choosen_table_name, import_year=import_year)
             
             print("Iniciando importação...")
             print("Obs.: Quanto maior o arquivo mais lenta sua importação")
@@ -265,6 +289,7 @@ def import_data(controller):
             except Exception as ex:
                 # trackeback.print
                 minutes = (time.time() - start_time) / 60
+                print(ex)
                 print("Finalizando importação com FALHA... em " + str(minutes) + " minutos")
             
     return -1

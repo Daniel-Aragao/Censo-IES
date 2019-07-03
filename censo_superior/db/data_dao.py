@@ -17,10 +17,8 @@ class DataDAO:
             connection = use_connection
         
         sql_insert = "INSERT INTO " + table_name + \
-            "(" + ",".join([i for i in columns]) + ") VALUES (" + ",".join(["%s" for i in columns]) + ")"
-        # sql_insert = sql_insert.replace(",)", ")")
+            "(" + ",".join([i for i in columns]) + ", import_year) VALUES (" + ",".join(["%s" for i in columns]) + ", %s)"
         
-        # print(sql_insert, fields, len(fields))
         connection.executemany(sql_insert, fields)
 
         if not use_connection:

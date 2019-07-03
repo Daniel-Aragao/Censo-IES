@@ -6,11 +6,12 @@ import re
 
 
 class ImportDataController:
-    def __init__(self, db, config, path, table_name):
+    def __init__(self, db, config, path, table_name, import_year):
         self.db = db
         self.main_config = config
         self.path_to_file = path
         self.table_name = table_name
+        self.import_year = import_year
         
     
     def __build_header_map(self):
@@ -87,16 +88,18 @@ class ImportDataController:
                             cell_value = ""
                     
                     else:
-                        raise Exception("Unsupported type: " + str(header_map[header_map_key]["field_type"]))
+                        raise Exception("Unsupported type: " + str(header_map[header_map_key]["field_type"]) + " for field:" + str(header_map[header_map_key]["field_name"]))
                         
                     cells.append(cell_value)
-                
+
+                cells.append(self.import_year)
                 fields.append(cells)
-            #print("connection:",connection)
+                
             ddao.add_fields(fields, self.table_name, header_map_columns, use_connection=connection)
-        
+            
         Importer.import_csv(self.path_to_file, self.main_config, bulk_function)
-        
+    
         ddao.connector.commit()
+        
         ddao.connector.close_connection()
         
