@@ -43,12 +43,12 @@ class StructureDAO:
 
         try:
             sql_insert = "INSERT INTO " + structure_name.lower() + StructureDAO.struct_suffix + \
-                "(field_name, field_description, synonymous, field_type, insertion_date, ignore_field_import, last_field_update) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                "(field_name, field_description, synonymous, field_type, insertion_date, ignore_field_import, last_field_update, imported_years) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
 
             time_now = time.strftime('%Y-%m-%d %H:%M:%S')
 
             data_insert = list(map(lambda x: (x["name"].strip(), x["description"].strip(), x["name"].strip(), x["type"].strip(),
-                                        time_now, not x["import"], time_now), field_dict))
+                                        time_now, not x["import"], time_now, x["imported_year"]), field_dict))
             
             connection.executemany(sql_insert, data_insert)
 
@@ -70,8 +70,6 @@ class StructureDAO:
             self.connector.commit()
         except Exception as err:
             self.connector.rollback()
-
-            print("Erro running SQL: " + str(sql_update))
             print(err)
 
         self.connector.close_connection()
@@ -79,7 +77,7 @@ class StructureDAO:
     def update_synonym(self, table, new_synonyms):
         connection = self.connector.make_connection()
 
-        sql_update = "UPDATE " + table + StructureDAO.struct_suffix + " SET synonymous = concat(synonymous, ',',%s) WHERE id = %s"
+        sql_update = "UPDATE " + table + StructureDAO.struct_suffix + " SET synonymous = concat(synonymous, ',', %s), last_field_update = %s, imported_years = concat(imported_years, ',', %s) WHERE id = %s"
 
         try:
             last_synonym = 0

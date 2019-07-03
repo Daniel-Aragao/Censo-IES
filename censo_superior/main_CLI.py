@@ -59,7 +59,7 @@ def importation_menu(table, updateController):
     while(True):
         selection = -1
         
-        selection = select_option("Selecione uma ação para a importação da tabela "+table+":",
+        selection = select_option("Selecione uma ação para a importação da tabela ("+table+"):",
         [
             "Sair",
             "Voltar",
@@ -77,10 +77,12 @@ def importation_menu(table, updateController):
             print("Quantidade de campos: " + str(len(fields_diff_map)))
         elif selection == 3:
             print("Nome", "Tipo", "Sinonimos", "Importar", "Descrição\n")
-
+            print("----------------------------------------------------------------------\n")
+            
             for index, field in enumerate(fields_diff_map):
                 print("#" + str(index + 1) + ".", "\"" + field["name"] + "\"", "\"" + field["type"] + "\"", "\"" +
                       field["synonymous"] + "\"", "\"" + str(field["import"]) + "\"", "\"" + field["description"].replace("\n", "\t") + "\"")
+                print("----------------------------------------------------------------------\n")
 
         elif selection == 4:
             if len(fields_diff_map) > 0:
@@ -121,8 +123,8 @@ def importation_menu(table, updateController):
             qtd_news = len(fields_diff_map) - qtd_synonymous
             
             text = "Você tem certeza que deseja finalizar e salvar todos os campos?"
-            text += "\n==> Campos configurados como sinônimos:" + str(qtd_synonymous)
-            text += "\n==> Campos configurados como novos:    " + str (qtd_news)
+            text += "\n==> Campos configurados como sinônimos: " + str(qtd_synonymous)
+            text += "\n==> Campos configurados como novos:     " + str (qtd_news)
             
             selection = select_option(text,
             [
@@ -131,6 +133,17 @@ def importation_menu(table, updateController):
             ], start=1)
             
             if selection == 1:
+                imported_year = 0
+
+                while (imported_year < 1000 or imported_year > 9999):
+                    try:
+                        imported_year = int(input("O ano do dicionário a ser importado: "))
+                    except:
+                        print("Valor inválido")
+
+                for field in fields_diff_map:
+                    field["imported_year"] = imported_year
+
                 updateController.save_table(table, fields_diff_map)
                 return -1
             elif selection == 2:
@@ -168,8 +181,8 @@ def import_structure(controller):
     choosen_table = choose_table(imported_tables)
 
     while(choosen_table):
-        print("========== Tabela " +
-              imported_tables[choosen_table - 1] + " ==========\n")
+        print("========== Tabela (" +
+              imported_tables[choosen_table - 1] + ") ==========\n")
 
         table_action = select_option("Selecione uma ação:", ["Sair", "Menu principal", "Trocar tabela", "Importar"])
 
@@ -218,7 +231,7 @@ def import_data(controller):
     if(choosen_table_name):
         selection = -1
         
-        text = "========== Tabela " + choosen_table_name + " ==========\n"
+        text = "========== Tabela (" + choosen_table_name + ") ==========\n"
         text += "Selecione uma das ações abaixo:"
         
         selection = select_option(text, ["Sair do programa", "Menu principal", "Importar dados"])

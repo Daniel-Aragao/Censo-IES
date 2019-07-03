@@ -1,3 +1,5 @@
+import time
+
 from importer import Importer
 from db.database import Database
 from config import Config
@@ -88,6 +90,8 @@ class UpdateStructController:
         new_fields = []
         new_synonym = []
 
+        time_now = time.strftime('%Y-%m-%d %H:%M:%S')
+
         if old_fields and len(old_fields):
             for field_dict in fields_dicts:
                 synonym = field_dict["synonymous"]
@@ -97,7 +101,7 @@ class UpdateStructController:
                         updated_id = next(
                             old_field[old_fields_key["id"]] for old_field in old_fields if old_field[old_fields_key["field_name"]] == synonym)
 
-                        new_synonym.append((field_dict["name"], updated_id))
+                        new_synonym.append((field_dict["name"], time_now, field_dict["imported_year"], updated_id))
 
                     except StopIteration as e:
                         errors.append(field_dict)

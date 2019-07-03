@@ -51,7 +51,8 @@ class Database:
                     "insertion_date DATE NOT NULL,"
                     "ignore_field_import TINYINT(1) NOT NULL DEFAULT 0,"
                     "ignore_field_creation TINYINT(1) NOT NULL DEFAULT 0,"
-                    "last_field_update DATE NOT NULL)")
+                    "last_field_update DATE NOT NULL,"
+                    "imported_years TEXT NOT NULL)")
 
                 print("Table created: " + str(table_name))
             self.connector.close_connection()
@@ -62,7 +63,8 @@ class Database:
 
             for table_name in not_created_data_tables_names:
                 connection.execute("CREATE TABLE " + table_name.lower() + " ("
-                                    "id INT AUTO_INCREMENT PRIMARY KEY"
+                                    "id INT AUTO_INCREMENT PRIMARY KEY,"
+                                    "import_year TINYINT NOT NULL"
                                     ")")
                                     
                 print("Table created: " + str(table_name))
