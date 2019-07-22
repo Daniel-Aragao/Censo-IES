@@ -4,6 +4,8 @@ from db.database import Database
 from api.updateStructController import UpdateStructController
 from api.importDataController import ImportDataController
 
+from log import log_printer
+
 from os import path as os_path
 import time
 
@@ -277,20 +279,22 @@ def import_data(controller):
         
             importDataController = ImportDataController(
                 controller["db"], config=controller["main_config"], path=path, table_name=choosen_table_name, import_year=import_year)
+
+            log_name = str(choosen_table_name) + " from " + str(import_year)
             
-            print("Iniciando importação...")
-            print("Obs.: Quanto maior o arquivo mais lenta sua importação")
+            log_printer("Iniciando importação..." + log_name,log_name)
+            log_printer("Obs.: Quanto maior o arquivo mais lenta sua importação",log_name)
             start_time = time.time()
 
             try:
                 importDataController.import_data()
                 minutes = (time.time() - start_time) / 60
-                print("Finalizando importação com SUCESSO... em " + str(minutes) + " minutos")
+                log_printer("Finalizando importação com SUCESSO... em " + str(minutes) + " minutos", log_name)
             except Exception as ex:
                 # trackeback.print
                 minutes = (time.time() - start_time) / 60
                 print(ex)
-                print("Finalizando importação com FALHA... em " + str(minutes) + " minutos")
+                log_printer("Finalizando importação com FALHA... em " + str(minutes) + " minutos", log_name)
             
     return -1
 
