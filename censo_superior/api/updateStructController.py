@@ -62,7 +62,7 @@ class UpdateStructController:
                         is_new = False
                         break 
                     
-                    elif description.lower() == new_field[1]:
+                    elif description.lower() == new_field[1].lower():
                         new_field[3] = old_field[old_fields_key["field_name"]]
 
                 if is_new:
