@@ -9,11 +9,6 @@ from log import log_printer
 from os import path as os_path
 import time
 
-#/mnt/chromeos/removable/SD Card/Diplan/Dicionário_de_Dados 2017.xlsx
-#/mnt/chromeos/removable/SD Card/Diplan/DM_CURSO_2017.CSV
-#/mnt/chromeos/removable/SD Card/Diplan/DM_IES_2017.CSV
-#/mnt/chromeos/removable/SD Card/Diplan/DM_ALUNO_2017.CSV
-
 def select_option(text, options, start=0):
     selection = -1
     qtd_opts = len(options)

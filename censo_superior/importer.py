@@ -58,13 +58,26 @@ class Importer:
     @staticmethod
     def import_workbook(path):
         return pandas.ExcelFile(path)
+    
+    @staticmethod
+    def import_sheet_names(path):
+        return Importer.import_workbook(path).sheet_names()
 
     @staticmethod
-    def import_sheet_from_workbook(workbook: pandas.io.excel.ExcelFile, sheet_name, header=1):
-        return workbook.parse(sheet_name, header=header)
+    def import_sheet_from_workbook(workbook: pandas.io.excel.ExcelFile, sheet_name, header=1, path: str=None):
+        if workbook:
+            return workbook.parse(sheet_name, header=header)
+        else:
+            return Importer.import_workbook(path).parse(sheet_name, header=header)
     
     @staticmethod
     def import_sheet_columns(sheet: pandas.core.frame.DataFrame=None, path: str=None, sheet_name: str = None, header=1):
+        """
+            Read sheet header from 
+                a string path with a default header line as 1 and another string with sheet name
+                or 
+                a pandas.core.frame.DataFrame object
+        """
         if sheet:
             return sheet.columns
         else:
@@ -109,6 +122,8 @@ class Importer:
 
         sheets = {}
 
+        ignored_rows = []
+
         for sheet_name in sheet_names:
             sheet_parsed = Importer.import_sheet_from_workbook(excel, sheet_name, header=label_number)
 
@@ -133,6 +148,7 @@ class Importer:
                     if type(column) == float and math.isnan(column) :
                         if clean_columns[i]["mandatory"]:
                             include_row = False
+                            ignored_rows.append((row, column))
                             break                
                 
                 if include_row:
@@ -140,6 +156,7 @@ class Importer:
             
             # print(sheet.name,len(sheet.data))
             sheets[dict_config["sheets"][sheet_name]] = sheet
+            print("Linhas ignoradas: ", ignored_rows)
         
         return sheets
 
