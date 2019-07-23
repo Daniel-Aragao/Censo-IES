@@ -60,8 +60,9 @@ def importation_menu(table, updateController):
         [
             "Sair",
             "Voltar",
-            "Exibir quantidade de campos",
-            "Exibir campos  (importados sem sinonimo encontrado)",
+            "Exibir quantidade de campos novos",
+            "Exibir campos Novos",
+            "Exibir campos Novos (SEM sinonimo)",
             "Configurar campo",
             "Salvar novos campos e finalizar operação"
         ])
@@ -72,16 +73,19 @@ def importation_menu(table, updateController):
             return -1
         elif selection == 2:
             print("Quantidade de campos: " + str(len(fields_diff_map)))
-        elif selection == 3:
+        elif selection == 3 or selection == 4:
             print("Ordem dos valores\nNome", "Tipo", "Sinonimos", "Importar", "Descrição\n")
             print("----------------------------------------------------------------------\n")
             
             for index, field in enumerate(fields_diff_map):
+                if selection == 4 and field["synonymous"]:
+                    continue
+                    
                 print("#" + str(index + 1) + ".", "\"" + field["name"] + "\"", "\"" + field["type"] + "\"", "\"" +
                       field["synonymous"] + "\"", "\"" + str(field["import"]) + "\"", "\"" + field["description"].replace("\n", "\t") + "\"")
                 print("----------------------------------------------------------------------\n")
-
-        elif selection == 4:
+        
+        elif selection == 5:
             if len(fields_diff_map) > 0:
                 field_index = -1
     
