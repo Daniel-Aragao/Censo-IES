@@ -122,7 +122,7 @@ class Importer:
 
         sheets = {}
 
-        ignored_rows = []
+        ignored_reasons = {}
 
         for sheet_name in sheet_names:
             sheet_parsed = Importer.import_sheet_from_workbook(excel, sheet_name, header=label_number)
@@ -148,7 +148,10 @@ class Importer:
                     if type(column) == float and math.isnan(column) :
                         if clean_columns[i]["mandatory"]:
                             include_row = False
-                            ignored_rows.append((row, clean_columns[1]))
+                            if not ignored_reasons[clean_columns[1]["column_key"]]:
+                                ignored_reasons[clean_columns[1]["column_key"]] = []
+
+                            ignored_reasons[clean_columns[1]["column_key"]].append(i)
                             break                
                 
                 if include_row:
@@ -156,7 +159,7 @@ class Importer:
             
             # print(sheet.name,len(sheet.data))
             sheets[dict_config["sheets"][sheet_name]] = sheet
-            print("Linhas ignoradas: ", ignored_rows)
+            print("Linhas ignoradas: ", ignored_reasons)
         
         return sheets
 
