@@ -148,7 +148,7 @@ class Importer:
                     if type(column) == float and math.isnan(column) :
                         if clean_columns[i]["mandatory"]:
                             include_row = False
-                            ignored_rows.append((row, column))
+                            ignored_rows.append((row, clean_columns[1]))
                             break                
                 
                 if include_row:
