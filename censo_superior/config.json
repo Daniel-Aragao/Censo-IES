@@ -8,16 +8,16 @@
     },
     "dictionary": {
         "sheets": {
-            "DM_ALUNO": "aluno",
-            "DM_CURSO": "curso",
-            "DM_IES": "ies"
+            "DM_ALUNO_2016": "aluno",
+            "DM_CURSO_2016": "curso",
+            "DM_IES_2016": "ies"
         },
         "columns": {
             "ord": {"name": "ORD", "mandatory": true},
             "name": {"name": "NOME DA VARIÁVEL", "mandatory": true},
-            "description": {"name": "DESCRIÇÃO DA VARIÁVEL", "mandatory": true},
+            "description": {"name": "DESCRIÇÃO", "mandatory": true},
             "type": {"name": "TIPO", "mandatory": true},
-            "size": {"name": "TAM", "mandatory": false},
+            "size": {"name": "TAMANHO", "mandatory": false},
             "category": {"name":"DESCRIÇÃO DAS CATEGORIAS", "mandatory": false},
             "obs": {"name": "OBSERVAÇÃO", "mandatory": false}
         },
@@ -33,7 +33,7 @@
     "database_access": {
         "name": "diplan_censo",
         "user": "diplan",
-        "password": "diplan",
+        "password": "diplan_censo",
         "host": "127.0.0.1"
     }
 }

@@ -98,14 +98,17 @@ class Importer:
             for column_key in dict_config:
                 column_config = dict_config[column_key]
 
-                if new_column.find(column_config["name"].upper()) >= 0:
+                if new_column.upper() == column_config["name"].upper():
                     columns_to_return.append({"sheet_column": new_column, "column_key": column_key, "mandatory": column_config["mandatory"]})
 
-        keys_finded = [i["column_key"] for i in columns_to_return]
+        keys_finded = [i["sheet_column"] for i in columns_to_return]
+        config_names = [dict_config[i]['name'] for i in dict_config]
 
         for column_key in dict_config:
-            if not column_key in keys_finded:
-                raise Exception("The column corresponding to the key \"" + column_key + "\" in config.json was not found")
+            column_name = dict_config[column_key]['name']
+
+            if not column_name in keys_finded :
+                raise Exception("The column corresponding to the key \"" + str(column_key) + " ( " + str(dict_config[column_key]['name'])  + " )\" in config.json was not found")
 
         return columns_to_return
 
@@ -129,14 +132,17 @@ class Importer:
 
             if not sheet_name in dict_config["sheets"]:
                 continue
-            
-            clean_columns = Importer.clean_columns(sheet_parsed.columns, dict_config["columns"])
+            try:
+	            clean_columns = Importer.clean_columns(sheet_parsed.columns, dict_config["columns"])
+            except Exception as exception:
+                print("The sheet ("+ sheet_name + ") could not be processed because of: " + exception.args[0] + "\n")
+                continue
 
             sheet = Sheet(sheet_name, [])
             
             rows = sheet_parsed.get([i["sheet_column"] for i in clean_columns])
 
-            for columns in rows.values:
+            for j, columns in enumerate(rows.values):
                 row = list(columns)
 
                 row_dict = {}
@@ -148,10 +154,10 @@ class Importer:
                     if type(column) == float and math.isnan(column) :
                         if clean_columns[i]["mandatory"]:
                             include_row = False
-                            if not ignored_reasons[clean_columns[1]["column_key"]]:
-                                ignored_reasons[clean_columns[1]["column_key"]] = []
+                            if clean_columns[1]["sheet_column"] not in ignored_reasons:
+                                ignored_reasons[clean_columns[1]["sheet_column"]] = []
 
-                            ignored_reasons[clean_columns[1]["column_key"]].append(i)
+                            ignored_reasons[clean_columns[1]["sheet_column"]].append((j,sheet_name))
                             break                
                 
                 if include_row:
@@ -159,7 +165,7 @@ class Importer:
             
             # print(sheet.name,len(sheet.data))
             sheets[dict_config["sheets"][sheet_name]] = sheet
-            print("Linhas ignoradas: ", ignored_reasons)
+        print("Linhas ignoradas para as seguintes chaves configuradas como obrigatórias: ", ignored_reasons, "\n")
         
         return sheets
 
