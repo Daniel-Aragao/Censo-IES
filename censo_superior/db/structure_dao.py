@@ -20,12 +20,12 @@ class StructureDAO:
         connection = self.connector.make_connection()
 
         connection.execute(
-            "SELECT  id, field_name, synonymous, field_type, insertion_date, ignore_field_import FROM " + structure_name.lower())
+            "SELECT  id, field_name, synonymous, field_type, insertion_date, ignore_field_import, field_description FROM " + structure_name.lower())
         fetched_data = connection.fetchall()
 
         self.connector.close_connection()
 
-        return fetched_data, {"id": 0, "field_name": 1, "synonymous": 2, "field_type": 3, "insertion_date": 4, "ignore_field_import": 5}
+        return fetched_data, {"id": 0, "field_name": 1, "synonymous": 2, "field_type": 3, "insertion_date": 4, "ignore_field_import": 5, "field_description": 6}
 
     def get_type(self, type_db):
         type_db = type_db.lower()

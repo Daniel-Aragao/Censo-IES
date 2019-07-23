@@ -51,7 +51,7 @@ def importation_menu(table, updateController):
     
     for diff_field in diff_fields:  # diff_field = (name, description, type)
         fields_diff_map.append(
-            {"name": diff_field[0], "description": diff_field[1], "synonymous": "", "import": True, "type": diff_field[2]})
+            {"name": diff_field[0], "description": diff_field[1], "synonymous": diff_field[3], "import": True, "type": diff_field[2]})
 
     while(True):
         selection = -1

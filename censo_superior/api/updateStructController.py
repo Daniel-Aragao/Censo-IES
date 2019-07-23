@@ -39,7 +39,7 @@ class UpdateStructController:
         old_fields, old_fields_key = self.db.structure_dao.get_fields(
             table + Database.struct_suffix)
             
-        new_fields = [(data["name"], data["description"], data["type"])
+        new_fields = [[data["name"], data["description"], data["type"], ""]
                       for data in sheet.data]
                       
         diff_fields = []
@@ -49,8 +49,8 @@ class UpdateStructController:
                 is_new = True
 
                 for old_field in old_fields:
-                    synonymous = old_field[old_fields_key["synonymous"]].split(
-                        ",")
+                    synonymous = old_field[old_fields_key["synonymous"]].split(",")
+                    description = old_field[old_fields_key["field_description"]]
                     field_type = old_field[old_fields_key["field_type"]]
                     ignore_field_import = old_field[old_fields_key["ignore_field_import"]]
 
@@ -60,7 +60,10 @@ class UpdateStructController:
                                 "The field " + new_field[0] + "("+field_type+") already exists, but with a different type: " + new_field[2])
 
                         is_new = False
-                        break
+                        break 
+                    
+                    elif description.lower() == new_field[1]:
+                        new_field[3] = old_field[old_fields_key["field_name"]]
 
                 if is_new:
                     diff_fields.append(new_field)
