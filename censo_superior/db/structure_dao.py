@@ -21,6 +21,7 @@ class StructureDAO:
 
         connection.execute(
             "SELECT  id, field_name, synonymous, field_type, insertion_date, ignore_field_import, field_description FROM " + structure_name.lower())
+
         fetched_data = connection.fetchall()
 
         self.connector.close_connection()

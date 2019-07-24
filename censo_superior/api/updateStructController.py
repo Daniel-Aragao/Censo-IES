@@ -54,7 +54,7 @@ class UpdateStructController:
                     field_type = old_field[old_fields_key["field_type"]]
                     ignore_field_import = old_field[old_fields_key["ignore_field_import"]]
 
-                    if new_field[0] in synonymous:
+                    if new_field[0].strip() in synonymous:
                         if new_field[2].lower() != field_type.lower():
                             raise Exception(
                                 "The field " + new_field[0] + "("+field_type+") already exists, but with a different type: " + new_field[2])
@@ -62,7 +62,7 @@ class UpdateStructController:
                         is_new = False
                         break 
                     
-                    elif description.lower() == new_field[1].lower():
+                    elif description.lower().strip() == new_field[1].lower().strip():
                         new_field[3] = old_field[old_fields_key["field_name"]]
 
                 if is_new:

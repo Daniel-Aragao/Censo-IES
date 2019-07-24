@@ -117,7 +117,7 @@ def importation_menu(table, updateController):
                 elif field_action == 3:
                     field["import"] = not field["import"]
 
-        elif selection == 5:
+        elif selection == 6:
             selection = -1
             
             qtd_synonymous = len([i for i in fields_diff_map if i["synonymous"]])
