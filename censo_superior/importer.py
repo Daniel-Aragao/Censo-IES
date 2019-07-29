@@ -93,6 +93,7 @@ class Importer:
         new_columns = list(map(lambda x: str(x).replace("\n",'').upper(), new_columns))
 
         columns_to_return = []
+        columns_ignored = []
 
         for new_column in new_columns:
             for column_key in dict_config:
@@ -100,15 +101,17 @@ class Importer:
 
                 if new_column.upper() == column_config["name"].upper():
                     columns_to_return.append({"sheet_column": new_column, "column_key": column_key, "mandatory": column_config["mandatory"]})
+                else:
+                    columns_ignored.append(new_column)
 
         keys_finded = [i["sheet_column"] for i in columns_to_return]
-        config_names = [dict_config[i]['name'] for i in dict_config]
+#        config_names = [dict_config[i]['name'] for i in dict_config]
 
         for column_key in dict_config:
             column_name = dict_config[column_key]['name']
 
             if not column_name in keys_finded :
-                raise Exception("The column corresponding to the key \"" + str(column_key) + " ( " + str(dict_config[column_key]['name'])  + " )\" in config.json was not found")
+                raise Exception("The column corresponding to the key \"" + str(column_key) + " ( " + str(dict_config[column_key]['name'])  + " )\" in config.json was not found", columns_ignored)
 
         return columns_to_return
 
@@ -131,11 +134,18 @@ class Importer:
             sheet_parsed = Importer.import_sheet_from_workbook(excel, sheet_name, header=label_number)
 
             if not sheet_name in dict_config["sheets"]:
+                print("Planilha não configurada encontrada: " + str(sheet_name))
                 continue
+
             try:
-	            clean_columns = Importer.clean_columns(sheet_parsed.columns, dict_config["columns"])
+                clean_columns = Importer.clean_columns(sheet_parsed.columns, dict_config["columns"])
+
             except Exception as exception:
                 print("The sheet ("+ sheet_name + ") could not be processed because of: " + exception.args[0] + "\n")
+
+                for ignored_column in exception.args[1]:
+                    print("Coluna ("+ignored_column+") não configurada encontrada e ignorada para a planilha ("+sheet_name+")")
+
                 continue
 
             sheet = Sheet(sheet_name, [])
