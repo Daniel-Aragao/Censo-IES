@@ -61,7 +61,7 @@ class Importer:
     
     @staticmethod
     def import_sheet_names(path):
-        return Importer.import_workbook(path).sheet_names()
+        return Importer.import_workbook(path).book.sheet_names()
 
     @staticmethod
     def import_sheet_from_workbook(workbook: pandas.io.excel.ExcelFile, sheet_name, header=1, path: str=None):
