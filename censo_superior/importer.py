@@ -96,13 +96,17 @@ class Importer:
         columns_ignored = []
 
         for new_column in new_columns:
+            found = False
+
             for column_key in dict_config:
                 column_config = dict_config[column_key]
 
                 if new_column.upper() == column_config["name"].upper():
                     columns_to_return.append({"sheet_column": new_column, "column_key": column_key, "mandatory": column_config["mandatory"]})
-                else:
-                    columns_ignored.append(new_column)
+                    found = True
+
+            if not found:
+                columns_ignored.append(new_column)
 
         keys_finded = [i["sheet_column"] for i in columns_to_return]
 #        config_names = [dict_config[i]['name'] for i in dict_config]
@@ -131,6 +135,7 @@ class Importer:
         ignored_reasons = {}
 
         for sheet_name in sheet_names:
+            print(sheet_name)
             sheet_parsed = Importer.import_sheet_from_workbook(excel, sheet_name, header=label_number)
 
             if not sheet_name in dict_config["sheets"]:
